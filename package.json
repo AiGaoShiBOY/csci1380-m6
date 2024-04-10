@@ -1,0 +1,24 @@
+{
+  "name": "distribution",
+  "version": "0.0.1",
+  "description": "A library for building distributed systems.",
+  "main": "distribution.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "eslint-config-google": "^0.14.0",
+    "javascript-obfuscator": "^4.1.0",
+    "jest": "^27.4.7"
+  },
+  "scripts": {
+    "test": "jest --maxWorkers 1",
+    "lint": "eslint --ignore-path .gitignore ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
+}
