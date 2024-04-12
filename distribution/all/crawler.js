@@ -1,20 +1,21 @@
 var Crawler = require("crawler");
+const { id } = require("../util/util");
 
 const crawler = function (config) {
   let context = {};
+  let distribution = global.distribution;
   context.gid = config.gid || "all";
   context.hash = config.hash || id.naiveHash;
-  let distribution = global.distribution;
   return {
-    getPage: (baseUrl, callback) => {
-      callback = callback || function () {};
+    getPage: (baseUrl, getPagecallback) => {
+      getPagecallback = getPagecallback || function () {};
       // base url: https://www.usenix.org/publications/proceedings
       // page example: https://www.usenix.org/publications/proceedings?page=345
 
       var c = new Crawler({
         callback: function (error, res, cb) {
           if (error) {
-            callback(error);
+            getPagecallback(error);
           } else {
             var $ = res.$;
             var lastPageURL = $("a[title='Go to last page']").attr("href");
@@ -23,34 +24,35 @@ const crawler = function (config) {
             // get page url
             if (pageNumber && pageNumber.length > 1) {
               console.log(`total number of pages: ${pageNumber[1]}`);
+              
               let pageCnt = pageNumber[1];
               let msgCnter = pageNumber[1];
               while (pageCnt > 0) {
-                let pageUrl = `${baseUrl}?page=${pageCnt}`;
+                let pageUrl = {page: pageCnt, url: `${baseUrl}?page=${pageCnt}`};
                 let pageUrls = [{ page: 0, url: baseUrl }];
+                pageUrls.push(pageUrl);
                 pageCnt -= 1;
-
+                let pageId = id.getID(pageUrl)
+                console.log(`start distributing the page {key: ${pageId}, value: ${JSON.stringify(pageUrl)}} across the nodes...`);
                 // distribute page urls to other nodes
-                distribution[gid].store.put(
+                distribution[context.gid].store.put(
                   pageUrl,
-                  { key: distribution.util.getID(pageUrl), gid: "pagesUrl" },
+                  { key: pageId, gid: "pagesUrl" },
                   (e, v) => {
-                    console.log(`${gid}.store.put error :${e}, value: ${v}`);
                     if (e) {
-                      callback(new Error(`[ERROR] store.put: ${e} `));
+                      getPagecallback(new Error(`[ERROR] store.put: ${e} `));
                     } else {
-                      pageUrls.push(pageUrl);
                       msgCnter--;
-                      if (msgCnter === 0) {
+                      if (msgCnter === 0 ) {
                         // check if all page urls are store successfully
-                        callback(null, pageUrls); // for test purpose
+                        getPagecallback(null, pageUrls); // for test purpose
                       }
                     }
                   }
                 );
               }
             } else {
-              callback(
+              getPagecallback(
                 new Error(`Page number not found in the href ${lastPageURL}.`)
               );
             }
@@ -64,7 +66,7 @@ const crawler = function (config) {
       // Value: {page: 1, url: https://www.usenix.org/publications/proceedings?page=1}
     },
 
-    getArticle: (pageUrl, callback) => {
+    getArticle: (pageUrl, getArticleCallback) => {
       // https://www.usenix.org/conference/usenixsecurity24/presentation/wen
 
       var subC = new Crawler({
@@ -90,7 +92,7 @@ const crawler = function (config) {
             // Value: article obj
             distribution[gid].store.put(
               article,
-              {key: distribution.util.getID(article), gid: 'articles'},
+              { key: distribution.util.getID(article), gid: "articles" },
               (e, v) => {
                 console.log(`${gid}.store.put error :${e}, value: ${v}`);
                 cb(e, v);
@@ -116,15 +118,15 @@ const crawler = function (config) {
                 .each(function () {
                   // Iterate over each <td> element within the current <tr>
                   var tdContent = $(this).text().trim(); // Get the text content of <td>
-                  var link = $(this).find("a[href*=presentation]").attr("href"); // Get the href attribute of <a> inside <td>
+                  var link = $(this).find("a").attr("href"); // Get the href attribute of <a> inside <td>
                   if (link) {
-                    // article link
+                    // title and article
                     rowData.push({
                       text: tdContent,
                       href: link,
                     });
                   } else {
-                    // title or author names
+                    // authors
                     rowData.push({
                       text: tdContent,
                     });
@@ -138,7 +140,7 @@ const crawler = function (config) {
                 articleObj: article,
               });
             });
-            callback(null, articles);
+            getArticleCallback(null, articles);
             // each element in articles is represented as:
             // [
             //     { text: "USENIX Security '23" },
