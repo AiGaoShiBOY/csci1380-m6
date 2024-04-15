@@ -94,11 +94,6 @@ const crawler = function (config) {
                         text: tdContent,
                         href: link,
                       });
-                    } else {
-                      // authors
-                      rowData.push({
-                        text: tdContent,
-                      });
                     }
                   });
                 articles.push(rowData);
@@ -144,8 +139,9 @@ const crawler = function (config) {
             let article = {};
             article.conference = articleObj[0].text;
             article.title = articleObj[1].text;
-            article.authors = removeAccents(articleObj[2].text);
             article.abstract = abstractText;
+            const authors = $(".field-name-field-paper-people-text").text().replace(/^Authors:/, '').trim();
+            article.authors = removeAccents(authors);
 
             distribution[context.gid].store.put(
               article,

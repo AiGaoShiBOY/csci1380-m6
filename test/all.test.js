@@ -1066,7 +1066,33 @@ test("all.crawler.getPage(baseurl)", (done) => {
   });
 });
 
-test("all.crawler.getArticle(articleUrl)", (done) => {
+test("all.crawler.getArticle(articleUrl) w/ abstract", (done) => {
+  const articleurl =
+    "https://www.usenix.org/conference/usenixsecurity24/presentation/cheng-xiaoyu";
+  const article = [
+    { text: "USENIX Security '24", href: "conference/usenixsecurity24" },
+    {
+      text: "SpecLFB: Eliminating Cache Side Channels in Speculative Executions",
+      href: "/conference/usenixsecurity24/presentation/cheng-xiaoyu",
+    },
+    { text: "" },
+  ];
+  const expected = {
+    conference: "USENIX Security '24",
+    title: "SpecLFB: Eliminating Cache Side Channels in Speculative Executions",
+    authors:
+      "Xiaoyu Cheng, School of Cyber Science and Engineering, Southeast University, Nanjing, Jiangsu, China; Jiangsu Province Engineering Research Center of Security for Ubiquitous Network, China; Fei Tong, School of Cyber Science and Engineering, Southeast University, Nanjing, Jiangsu, China; Jiangsu Province Engineering Research Center of Security for Ubiquitous Network, China; Purple Mountain Laboratories, Nanjing, Jiangsu, China; Hongyu Wang, State Key Laboratory of Power Equipment Technology, School of Electrical Engineering, Chongqing University, China; Wiscom System Co., LTD, Nanjing, China; Zhe Zhou and Fang Jiang, School of Cyber Science and Engineering, Southeast University, Nanjing, Jiangsu, China; Jiangsu Province Engineering Research Center of Security for Ubiquitous Network, China; Yuxing Mao, State Key Laboratory of Power Equipment Technology, School of Electrical Engineering, Chongqing University, China",
+    abstract:
+      "Cache side-channel attacks based on speculative executions are powerful and difficult to mitigate. Existing hardware defense schemes often require additional hardware data structures, data movement operations and/or complex logical computations, resulting in excessive overhead of both processor performance and hardware resources. To this end, this paper proposes SpecLFB, which utilizes the microarchitecture component, Line-Fill-Buffer, integrated with a proposed mechanism for load security check to prevent the establishment of cache side channels in speculative executions. To ensure the correctness and immediacy of load security check, a structure called ROB unsafe mask is designed for SpecLFB to track instruction state. To further reduce processor performance overhead, SpecLFB narrows down the protection scope of unsafe speculative loads and determines the time at which they can be deprotected as early as possible. SpecLFB has been implemented in the open-source RISC-V core, SonicBOOM, as well as in Gem5. For the enhanced SonicBOOM, its register-transfer-level (RTL) code is generated, and an FPGA hardware prototype burned with the core and running a Linux-kernel-based operating system is developed. Based on the evaluations in terms of security guarantee, performance overhead, and hardware resource overhead through RTL simulation, FPGA prototype experiment, and Gem5 simulation, it shows that SpecLFB effectively defends against attacks. It leads to a hardware resource overhead of only 0.6% and the performance overhead of only 1.85% and 3.20% in the FPGA prototype experiment and Gem5 simulation, respectively.",
+  };
+  distribution.mygroup.crawler.getArticle(articleurl, article, (e, v) => {
+    expect(e).toBeFalsy();
+    expect(v).toEqual(expected);
+    done();
+  });
+});
+
+test("all.crawler.getArticle(articleUrl) w/o abstract", (done) => {
   const articleurl =
     "https://www.usenix.org/conference/usenix-mach-symposium/how-design-reliable-servers-using-fault-tolerant-micro-kernel";
   const article = [
@@ -1081,7 +1107,8 @@ test("all.crawler.getArticle(articleUrl)", (done) => {
     conference: "USENIX Mach Symposium",
     title:
       "How to Design Reliable Servers using Fault Tolerant Micro-Kernel Mechanisms",
-    authors: "Michel Banatre, Gilles Muller, Pack Heng, Bruno Rochat",
+    authors:
+      "Michel Banatre and Gilles Muller, IRISA/INRlA; Pack Heng and Bruno Rochat, BULL Research",
     abstract: "",
   };
   distribution.mygroup.crawler.getArticle(articleurl, article, (e, v) => {
@@ -1103,24 +1130,29 @@ test("all.crawler.getArticles(pageUrl)", (done) => {
       done(error);
     }
     distribution.mygroup.comm.send(msg, remote, (e, v) => {
-      let n1Cnt = 0, n2Cnt = 0, n3Cnt= 0, n4Cnt= 0, n5Cnt= 0, n6Cnt = 0
+      let n1Cnt = 0,
+        n2Cnt = 0,
+        n3Cnt = 0,
+        n4Cnt = 0,
+        n5Cnt = 0,
+        n6Cnt = 0;
       try {
-        if (v.hasOwnProperty(n1SID)){
+        if (v.hasOwnProperty(n1SID)) {
           n1Cnt = v[n1SID].length;
         }
-        if (v.hasOwnProperty(n2SID)){
+        if (v.hasOwnProperty(n2SID)) {
           n2Cnt = v[n2SID].length;
         }
-        if (v.hasOwnProperty(n3SID)){
+        if (v.hasOwnProperty(n3SID)) {
           n3Cnt = v[n3SID].length;
         }
-        if (v.hasOwnProperty(n4SID)){
+        if (v.hasOwnProperty(n4SID)) {
           n4Cnt = v[n4SID].length;
         }
-        if (v.hasOwnProperty(n5SID)){
+        if (v.hasOwnProperty(n5SID)) {
           n5Cnt = v[n5SID].length;
         }
-        if (v.hasOwnProperty(n6SID)){
+        if (v.hasOwnProperty(n6SID)) {
           n6Cnt = v[n6SID].length;
         }
         const totalCnt = n1Cnt + n2Cnt + n3Cnt + n4Cnt + n5Cnt + n6Cnt;
