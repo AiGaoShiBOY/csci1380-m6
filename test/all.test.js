@@ -28,6 +28,13 @@ const n4 = { ip: "127.0.0.1", port: 8003 };
 const n5 = { ip: "127.0.0.1", port: 8004 };
 const n6 = { ip: "127.0.0.1", port: 8005 };
 
+const n1SID = id.getSID(n1);
+const n2SID = id.getSID(n2);
+const n3SID = id.getSID(n3);
+const n4SID = id.getSID(n4);
+const n5SID = id.getSID(n5);
+const n6SID = id.getSID(n6);
+
 beforeAll((done) => {
   // First, stop the nodes if they are running
   let remote = { service: "status", method: "stop" };
@@ -1045,10 +1052,10 @@ test("all.crawler.getPage(baseurl)", (done) => {
     }
     distribution.mygroup.comm.send(msg, remote, (e, v) => {
       try {
-        const n1Cnt = Object.keys(v[id.getSID(n1)]).length
-        const n2Cnt = Object.keys(v[id.getSID(n2)]).length
-        const n3Cnt = Object.keys(v[id.getSID(n3)]).length
-        const totalCnt = n1Cnt + n2Cnt + n3Cnt
+        const n1Cnt = Object.keys(v[id.getSID(n1)]).length;
+        const n2Cnt = Object.keys(v[id.getSID(n2)]).length;
+        const n3Cnt = Object.keys(v[id.getSID(n3)]).length;
+        const totalCnt = n1Cnt + n2Cnt + n3Cnt;
         expect(e).toEqual({});
         expect(totalCnt).toEqual(345);
       } catch (error) {
@@ -1059,36 +1066,70 @@ test("all.crawler.getPage(baseurl)", (done) => {
   });
 });
 
-// test("all.crawler.getArticle(baseurl)", (done) => {
-//   const pageUrl = "https://www.usenix.org/publications/proceedings?page=345";
-//   let expectedArticles = [
-//     {
-//       conference: "USENIX Mach Symposium",
-//       title: "DOS as a Mach 3.0 Application",
-//       authors: "Gerald Malan, Richard Rashid, David Golub, Robert Baron",
-//       abstract: "",
-//     },
-//     {
-//       conference: "USENIX Mach Symposium",
-//       title: "A Causal Distributed Shared Memory Based on External Pagers",
-//       authors: "Fabienne Boyer",
-//       abstract: "",
-//     },
-//     {
-//       conference: "USENIX Mach Symposium",
-//       title: "Mach Resource Control in OSF/1",
-//       authors: "	David W. Mitchell",
-//       abstract: "",
-//     },
-//   ];
+test("all.crawler.getArticle(articleUrl)", (done) => {
+  const articleurl =
+    "https://www.usenix.org/conference/usenix-mach-symposium/how-design-reliable-servers-using-fault-tolerant-micro-kernel";
+  const article = [
+    { text: "USENIX Mach Symposium", href: "/conference/usenixmachsymposium" },
+    {
+      text: "How to Design Reliable Servers using Fault Tolerant Micro-Kernel Mechanisms",
+      href: "/conference/usenix-mach-symposium/how-design-reliable-servers-using-fault-tolerant-micro-kernel",
+    },
+    { text: "Michel Banâtre, Gilles Muller, Pack Heng, Bruno Rochat" },
+  ];
+  const expected = {
+    conference: "USENIX Mach Symposium",
+    title:
+      "How to Design Reliable Servers using Fault Tolerant Micro-Kernel Mechanisms",
+    authors: "Michel Banatre, Gilles Muller, Pack Heng, Bruno Rochat",
+    abstract: "",
+  };
+  distribution.mygroup.crawler.getArticle(articleurl, article, (e, v) => {
+    expect(e).toBeFalsy();
+    expect(v).toEqual(expected);
+    done();
+  });
+});
 
-//   distribution.mygroup.crawler.getArticle(pageUrl, (e, v) => {
-//     try {
-//       expect(e).toBeFalsy();
-//       expect(v).toEqual(expect.arrayContaining(expectedArticles));
-//       done();
-//     } catch (error) {
-//       done(error);
-//     }
-//   });
-// });
+test("all.crawler.getArticles(pageUrl)", (done) => {
+  const pageUrl = "https://www.usenix.org/publications/proceedings?page=345";
+  const msg = [{ gid: "articles" }];
+  const remote = { service: "store", method: "get" };
+
+  distribution.mygroup.crawler.getArticles(pageUrl, (e, v) => {
+    try {
+      expect(e).toBeFalsy();
+    } catch (error) {
+      done(error);
+    }
+    distribution.mygroup.comm.send(msg, remote, (e, v) => {
+      let n1Cnt = 0, n2Cnt = 0, n3Cnt= 0, n4Cnt= 0, n5Cnt= 0, n6Cnt = 0
+      try {
+        if (v.hasOwnProperty(n1SID)){
+          n1Cnt = v[n1SID].length;
+        }
+        if (v.hasOwnProperty(n2SID)){
+          n2Cnt = v[n2SID].length;
+        }
+        if (v.hasOwnProperty(n3SID)){
+          n3Cnt = v[n3SID].length;
+        }
+        if (v.hasOwnProperty(n4SID)){
+          n4Cnt = v[n4SID].length;
+        }
+        if (v.hasOwnProperty(n5SID)){
+          n5Cnt = v[n5SID].length;
+        }
+        if (v.hasOwnProperty(n6SID)){
+          n6Cnt = v[n6SID].length;
+        }
+        const totalCnt = n1Cnt + n2Cnt + n3Cnt + n4Cnt + n5Cnt + n6Cnt;
+
+        expect(totalCnt).toEqual(17);
+      } catch (error) {
+        done(error);
+      }
+    });
+    done();
+  });
+});
