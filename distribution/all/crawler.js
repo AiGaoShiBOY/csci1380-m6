@@ -6,69 +6,69 @@ const crawler = function (config) {
   let distribution = global.distribution;
   context.gid = config.gid || "all";
   context.hash = config.hash || id.naiveHash;
+  var c = new Crawler();
+
   return {
     getPage: (baseUrl, getPagecallback) => {
       getPagecallback = getPagecallback || function () {};
       // base url: https://www.usenix.org/publications/proceedings
       // page example: https://www.usenix.org/publications/proceedings?page=345
 
-      var c = new Crawler({
-        callback: function (error, res, cb) {
-          if (error) {
-            getPagecallback(error);
-          } else {
-            var $ = res.$;
-            var lastPageURL = $("a[title='Go to last page']").attr("href");
-            var pageNumber = lastPageURL.match(/page=(\d+)/);
+      c.queue([
+        {
+          uri: baseUrl,
+          callback: function (error, res, cb) {
+            if (error) {
+              getPagecallback(error);
+            } else {
+              var $ = res.$;
+              var lastPageURL = $("a[title='Go to last page']").attr("href");
+              var pageNumber = lastPageURL.match(/page=(\d+)/);
 
-            // get page url
-            if (pageNumber && pageNumber.length > 1) {
-              console.log(`total number of pages: ${pageNumber[1]}`);
-              
-              let pageCnt = pageNumber[1];
-              let msgCnter = pageNumber[1];
-              while (pageCnt > 0) {
-                let pageUrl = {page: pageCnt, url: `${baseUrl}?page=${pageCnt}`};
-                let pageUrls = [{ page: 0, url: baseUrl }];
-                pageUrls.push(pageUrl);
-                pageCnt -= 1;
-                let pageId = id.getID(pageUrl)
-                console.log(`start distributing the page {key: ${pageId}, value: ${JSON.stringify(pageUrl)}} across the nodes...`);
-                // distribute page urls to other nodes
-                distribution[context.gid].store.put(
-                  pageUrl,
-                  { key: pageId, gid: "pagesUrl" },
-                  (e, v) => {
-                    if (e) {
-                      getPagecallback(new Error(`[ERROR] store.put: ${e} `));
-                    } else {
-                      msgCnter--;
-                      if (msgCnter === 0 ) {
-                        // check if all page urls are store successfully
-                        getPagecallback(null, pageUrls); // for test purpose
+              // get page url
+              if (pageNumber && pageNumber.length > 1) {
+                let pageCnt = pageNumber[1];
+                let msgCnter = pageNumber[1];
+                while (pageCnt > 0) {
+                  let pageUrl = {
+                    page: pageCnt,
+                    url: `${baseUrl}?page=${pageCnt}`,
+                  };
+                  let pageUrls = [{ page: 0, url: baseUrl }];
+                  pageUrls.push(pageUrl);
+                  pageCnt -= 1;
+                  let pageId = id.getID(pageUrl);
+
+                  // distribute page urls to other nodes
+                  distribution[context.gid].store.put(
+                    pageUrl,
+                    { key: pageId, gid: "pagesUrl" },
+                    (e, v) => {
+                      if (e) {
+                        getPagecallback(new Error(`[ERROR] store.put: ${e} `));
+                      } else {
+                        msgCnter--;
+                        if (msgCnter === 0) {
+                          // check if all page urls are store successfully
+                          getPagecallback(null, pageUrls); // for test purpose
+                        }
                       }
                     }
-                  }
+                  );
+                }
+              } else {
+                getPagecallback(
+                  new Error(`Page number not found in the href ${lastPageURL}.`)
                 );
               }
-            } else {
-              getPagecallback(
-                new Error(`Page number not found in the href ${lastPageURL}.`)
-              );
             }
-          }
+          },
         },
-      });
-
-      c.queue(baseUrl);
-      // const pageurls = [...urls]
-      // Key: hash(value)
-      // Value: {page: 1, url: https://www.usenix.org/publications/proceedings?page=1}
+      ]);
     },
 
     getArticle: (pageUrl, getArticleCallback) => {
-      // https://www.usenix.org/conference/usenixsecurity24/presentation/wen
-
+      // example article url: https://www.usenix.org/conference/usenixsecurity24/presentation/wen
       var subC = new Crawler({
         callback: function (error, res, cb) {
           if (error) {
@@ -87,9 +87,7 @@ const crawler = function (config) {
             article.title = res.options.articleObj[1].text;
             article.authors = res.options.articleObj[2].text;
             article.abstract = abstractText;
-            // File storage store/s-sid/pagesHtml
-            // Key: hash(value)
-            // Value: article obj
+           
             distribution[gid].store.put(
               article,
               { key: distribution.util.getID(article), gid: "articles" },
@@ -136,7 +134,7 @@ const crawler = function (config) {
             });
             articles.forEach((article) => {
               subC.queue({
-                uri: `https://www.usenix.org${ele[1].href}`,
+                uri: `https://www.usenix.org${article[1].href}`,
                 articleObj: article,
               });
             });

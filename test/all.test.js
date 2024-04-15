@@ -1034,15 +1034,28 @@ afterAll((done) => {
 // ------ crawler test
 test("all.crawler.getPage(baseurl)", (done) => {
   const baseUrl = "https://www.usenix.org/publications/proceedings";
+  const msg = [{ gid: "pagesUrl" }];
+  const remote = { service: "store", method: "get" };
 
   distribution.mygroup.crawler.getPage(baseUrl, (e, v) => {
     try {
       expect(e).toBeFalsy();
-      expect(v.length).toEqual(345);
-      done();
     } catch (error) {
       done(error);
     }
+    distribution.mygroup.comm.send(msg, remote, (e, v) => {
+      try {
+        const n1Cnt = Object.keys(v[id.getSID(n1)]).length
+        const n2Cnt = Object.keys(v[id.getSID(n2)]).length
+        const n3Cnt = Object.keys(v[id.getSID(n3)]).length
+        const totalCnt = n1Cnt + n2Cnt + n3Cnt
+        expect(e).toEqual({});
+        expect(totalCnt).toEqual(345);
+      } catch (error) {
+        done(error);
+      }
+    });
+    done();
   });
 });
 
