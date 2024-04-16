@@ -1,8 +1,8 @@
-global.nodeConfig = { ip: "127.0.0.1", port: 8080 };
-const distribution = require("../distribution");
+global.nodeConfig = {ip: '127.0.0.1', port: 8080};
+const distribution = require('../distribution');
 const id = distribution.util.id;
 
-const groupsTemplate = require("../distribution/all/groups");
+const groupsTemplate = require('../distribution/all/groups');
 
 // This group is used for testing most of the functionality
 const mygroupGroup = {};
@@ -21,12 +21,12 @@ const group4Group = {};
 */
 let localServer = null;
 
-const n1 = { ip: "127.0.0.1", port: 8000 };
-const n2 = { ip: "127.0.0.1", port: 8001 };
-const n3 = { ip: "127.0.0.1", port: 8002 };
-const n4 = { ip: "127.0.0.1", port: 8003 };
-const n5 = { ip: "127.0.0.1", port: 8004 };
-const n6 = { ip: "127.0.0.1", port: 8005 };
+const n1 = {ip: '127.0.0.1', port: 8000};
+const n2 = {ip: '127.0.0.1', port: 8001};
+const n3 = {ip: '127.0.0.1', port: 8002};
+const n4 = {ip: '127.0.0.1', port: 8003};
+const n5 = {ip: '127.0.0.1', port: 8004};
+const n6 = {ip: '127.0.0.1', port: 8005};
 
 const n1SID = id.getSID(n1);
 const n2SID = id.getSID(n2);
@@ -37,7 +37,7 @@ const n6SID = id.getSID(n6);
 
 beforeAll((done) => {
   // First, stop the nodes if they are running
-  let remote = { service: "status", method: "stop" };
+  let remote = {service: 'status', method: 'stop'};
 
   remote.node = n1;
   distribution.local.comm.send([], remote, (e, v) => {
@@ -82,11 +82,11 @@ beforeAll((done) => {
     localServer = server;
 
     const groupInstantiation = (e, v) => {
-      const mygroupConfig = { gid: "mygroup" };
-      const group1Config = { gid: "group1", hash: id.naiveHash };
-      const group2Config = { gid: "group2", hash: id.consistentHash };
-      const group3Config = { gid: "group3", hash: id.rendezvousHash };
-      const group4Config = { gid: "group4" };
+      const mygroupConfig = {gid: 'mygroup'};
+      const group1Config = {gid: 'group1', hash: id.naiveHash};
+      const group2Config = {gid: 'group2', hash: id.consistentHash};
+      const group3Config = {gid: 'group3', hash: id.rendezvousHash};
+      const group4Config = {gid: 'group4'};
 
       // Create some groups
       groupsTemplate(mygroupConfig).put(mygroupConfig, mygroupGroup, (e, v) => {
@@ -104,11 +104,11 @@ beforeAll((done) => {
                     group4Group,
                     (e, v) => {
                       done();
-                    }
+                    },
                   );
-                }
+                },
               );
-            }
+            },
           );
         });
       });
@@ -131,7 +131,7 @@ beforeAll((done) => {
 
 afterAll((done) => {
   distribution.mygroup.status.stop((e, v) => {
-    let remote = { service: "status", method: "stop" };
+    let remote = {service: 'status', method: 'stop'};
     remote.node = n1;
     distribution.local.comm.send([], remote, (e, v) => {
       remote.node = n2;
@@ -1029,6 +1029,7 @@ afterAll((done) => {
 //                 'group1',
 //                 id.getSID(n5),
 //                 (e, v) => {
+// eslint-disable-next-line max-len
 //                   distribution.group1.store.reconf(groupCopy, checkPlacement);
 //                 });
 //           });
@@ -1135,7 +1136,6 @@ afterAll((done) => {
 //   });
 // });
 
-
 // test('test for mapFunction', (done) => {
 
 //   let m1 = (key, value) => {
@@ -1160,7 +1160,7 @@ afterAll((done) => {
 //     //console.log(v);
 //     const testDataKeys = v.d3406;
 //     //console.log(testDataKeys);
-   
+
 //     msg = [{ key: testDataKeys[0], gid: "articles" }];
 //     distribution.mygroup.comm.send(msg, remote, (e, v) => {
 //       //console.log(Object.values(v));
@@ -1170,7 +1170,6 @@ afterAll((done) => {
 //     });
 //   });
 // });
-
 
 // test('test for reduceFunction', (done) => {
 //   testcase = {
@@ -1205,12 +1204,12 @@ afterAll((done) => {
 //     let out = {};
 //     let titles = [];
 //     let conferencesSet = new Set();
-    
+
 //     value[key].forEach(paper => {
 //       titles.push(paper.title);
 //       conferencesSet.add(paper.conference);
 //     })
-    
+
 //     out['numberOfPapers'] = value[key].length;
 //     out['titles'] = titles;
 //     out['conferences'] = [...conferencesSet];
@@ -1224,32 +1223,31 @@ afterAll((done) => {
 
 // });
 
-
 test('test for mapReduce', (done) => {
   let m1 = (key, value) => {
     let authorarray;
-    if(value.authors.includes(';')){
+    if (value.authors.includes(';')) {
       const group = message2.split(';');
-      const out = group.map(part => {
+      const out = group.map((part) => {
         elements = part.split(', ');
         return elements[0];
-      })
+      });
       authorarray = [...new Set(out)];
     } else {
       authorsArray = value.authors.split(', ');
     }
     //console.log(authorsArray, "authorarray");
     let out = [];
-    authorsArray.forEach(author => {
+    authorsArray.forEach((author) => {
       let result = {};
       result[author] = {
         title: value.title,
-        conference: value.conference
+        conference: value.conference,
       };
       out.push(result);
-    })
+    });
     return out;
-  }
+  };
 
   let r1 = (key, value) => {
     let out = {};
@@ -1259,12 +1257,12 @@ test('test for mapReduce', (done) => {
     if (!Array.isArray(value)) {
       value = [value];
     }
-    
-    value.forEach(paper => {
+
+    value.forEach((paper) => {
       titles.push(paper.title);
       conferencesSet.add(paper.conference);
-    })
-    
+    });
+
     result['numberOfPapers'] = value.length;
     result['titles'] = titles;
     result['conferences'] = [...conferencesSet];
@@ -1272,18 +1270,18 @@ test('test for mapReduce', (done) => {
     return out;
   };
 
-
-  let msg = [{ gid: "articles" }];
-  const remote = { service: "store", method: "get" };
+  let msg = [{gid: 'articles'}];
+  const remote = {service: 'store', method: 'get'};
   distribution.mygroup.comm.send(msg, remote, (e, v) => {
     const allValues = Object.values(v).flat();
     console.log(allValues);
     //testkeys = ['269655b3f10f1a0ce55b7609799b618895c15979b107e2f403839b6649c753dc'];
-    distribution.mygroup.mr.exec({keys: allValues, map: m1, reduce: r1, flexGid: "articles", memory: true}, (e, v) => {
-      console.log(v, "result");
-      done();
-    });
+    distribution.mygroup.mr.exec(
+      {keys: allValues, map: m1, reduce: r1, flexGid: 'articles', memory: true},
+      (e, v) => {
+        console.log(v, 'result');
+        done();
+      },
+    );
   });
-
-
 });

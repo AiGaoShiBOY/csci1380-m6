@@ -1,0 +1,31 @@
+{
+  "extends": "google",
+  "env": {
+    "es6": true, // Enable ES6 syntax including new ES6 globals
+    "node": true // Adjust based on your environment
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018, // Update ECMAScript version to at least 6 or later for arrow functions
+    "sourceType": "script" // Set to "module" if you are using ES6 modules
+  },
+  "rules": {
+    "no-var": "off", // Allow 'var' for ES5 compatibility
+    "prefer-const": "off", // Do not enforce const over let
+    "prefer-spread": "off", // Do not enforce spread operator
+    "prefer-rest-params": "off", // Do not enforce rest parameters
+    "prefer-template": "off", // Do not enforce template literals
+    "object-shorthand": "off", // Do not enforce object method shorthand
+    "require-jsdoc": "off",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "ClassDeclaration",
+        "message": "Class declarations are not allowed."
+      },
+      {
+        "selector": "ClassExpression",
+        "message": "Class expressions are not allowed."
+      }
+    ]
+  }
+}
