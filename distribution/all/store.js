@@ -46,10 +46,14 @@ const store = function(config) {
         const targetIdx = nids.indexOf(expectedHash);
         const targetNode = nodesArray[targetIdx];
 
-        const keyWithGid = {
-          key: key,
-          gid: context.gid,
-        };
+        if (typeof key === 'string') {
+          keyWithGid = {
+            key: key,
+            gid: context.gid,
+          };
+        } else {
+          keyWithGid = key;
+        }
 
         const message = [value, keyWithGid];
         const remoteWithNode = {
