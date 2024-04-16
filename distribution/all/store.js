@@ -24,7 +24,7 @@ const store = function(config) {
 
 
   return {
-    put: function(value, key, callback) {
+    put: function (value, key, callback) {
       callback = callback || function() {};
       distribution.local.groups.get(context.gid, (e, v) => {
         if (e) {
