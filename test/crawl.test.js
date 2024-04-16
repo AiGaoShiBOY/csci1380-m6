@@ -101,23 +101,23 @@ beforeAll((done) => {
       groupsTemplate(mygroupConfig).put(mygroupConfig, mygroupGroup, (e, v) => {
         groupsTemplate(group1Config).put(group1Config, group1Group, (e, v) => {
           groupsTemplate(group2Config).put(
-            group2Config,
-            group2Group,
-            (e, v) => {
-              groupsTemplate(group3Config).put(
-                group3Config,
-                group3Group,
-                (e, v) => {
-                  groupsTemplate(group4Config).put(
-                    group4Config,
-                    group4Group,
+              group2Config,
+              group2Group,
+              (e, v) => {
+                groupsTemplate(group3Config).put(
+                    group3Config,
+                    group3Group,
                     (e, v) => {
-                      done();
+                      groupsTemplate(group4Config).put(
+                          group4Config,
+                          group4Group,
+                          (e, v) => {
+                            done();
+                          },
+                      );
                     },
-                  );
-                },
-              );
-            },
+                );
+              },
           );
         });
       });
@@ -197,7 +197,7 @@ test('all.crawler.getArticle(articleUrl) w/ abstract', (done) => {
   const articleurl =
     'https://www.usenix.org/conference/usenixsecurity24/presentation/cheng-xiaoyu';
   const article = [
-    {text: "USENIX Security '24", href: 'conference/usenixsecurity24'},
+    {text: 'USENIX Security \'24', href: 'conference/usenixsecurity24'},
     {
       text: 'SpecLFB: Eliminating Cache Side Channels in Speculative Executions',
       href: '/conference/usenixsecurity24/presentation/cheng-xiaoyu',
@@ -205,7 +205,7 @@ test('all.crawler.getArticle(articleUrl) w/ abstract', (done) => {
     {text: ''},
   ];
   const expected = {
-    conference: "USENIX Security '24",
+    conference: 'USENIX Security \'24',
     title: 'SpecLFB: Eliminating Cache Side Channels in Speculative Executions',
     authors:
       'Xiaoyu Cheng, School of Cyber Science and Engineering, Southeast University, Nanjing, Jiangsu, China; Jiangsu Province Engineering Research Center of Security for Ubiquitous Network, China; Fei Tong, School of Cyber Science and Engineering, Southeast University, Nanjing, Jiangsu, China; Jiangsu Province Engineering Research Center of Security for Ubiquitous Network, China; Purple Mountain Laboratories, Nanjing, Jiangsu, China; Hongyu Wang, State Key Laboratory of Power Equipment Technology, School of Electrical Engineering, Chongqing University, China; Wiscom System Co., LTD, Nanjing, China; Zhe Zhou and Fang Jiang, School of Cyber Science and Engineering, Southeast University, Nanjing, Jiangsu, China; Jiangsu Province Engineering Research Center of Security for Ubiquitous Network, China; Yuxing Mao, State Key Laboratory of Power Equipment Technology, School of Electrical Engineering, Chongqing University, China',

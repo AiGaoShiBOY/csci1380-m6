@@ -92,23 +92,23 @@ beforeAll((done) => {
       groupsTemplate(mygroupConfig).put(mygroupConfig, mygroupGroup, (e, v) => {
         groupsTemplate(group1Config).put(group1Config, group1Group, (e, v) => {
           groupsTemplate(group2Config).put(
-            group2Config,
-            group2Group,
-            (e, v) => {
-              groupsTemplate(group3Config).put(
-                group3Config,
-                group3Group,
-                (e, v) => {
-                  groupsTemplate(group4Config).put(
-                    group4Config,
-                    group4Group,
+              group2Config,
+              group2Group,
+              (e, v) => {
+                groupsTemplate(group3Config).put(
+                    group3Config,
+                    group3Group,
                     (e, v) => {
-                      done();
+                      groupsTemplate(group4Config).put(
+                          group4Config,
+                          group4Group,
+                          (e, v) => {
+                            done();
+                          },
+                      );
                     },
-                  );
-                },
-              );
-            },
+                );
+              },
           );
         });
       });
@@ -1236,7 +1236,7 @@ test('test for mapReduce', (done) => {
     } else {
       authorsArray = value.authors.split(', ');
     }
-    //console.log(authorsArray, "authorarray");
+    // console.log(authorsArray, "authorarray");
     let out = [];
     authorsArray.forEach((author) => {
       let result = {};
@@ -1275,13 +1275,13 @@ test('test for mapReduce', (done) => {
   distribution.mygroup.comm.send(msg, remote, (e, v) => {
     const allValues = Object.values(v).flat();
     console.log(allValues);
-    //testkeys = ['269655b3f10f1a0ce55b7609799b618895c15979b107e2f403839b6649c753dc'];
+    // testkeys = ['269655b3f10f1a0ce55b7609799b618895c15979b107e2f403839b6649c753dc'];
     distribution.mygroup.mr.exec(
-      {keys: allValues, map: m1, reduce: r1, flexGid: 'articles', memory: true},
-      (e, v) => {
-        console.log(v, 'result');
-        done();
-      },
+        {keys: allValues, map: m1, reduce: r1, flexGid: 'articles', memory: true},
+        (e, v) => {
+          console.log(v, 'result');
+          done();
+        },
     );
   });
 });
