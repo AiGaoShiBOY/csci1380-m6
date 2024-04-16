@@ -55,58 +55,59 @@ function startCrawl(cleanup) {
   remote.node = engineNodes[0];
   // 1. crawl and store the pages on disk
   distribution.local.comm.send(
-    ['https://www.usenix.org/publications/proceedings'],
-    remote,
-    (e, v) => {
-      console.log(
-        `WARNING: do not use the values in the callback function. It is only designed for tests.`,
-      );
-      console.log(
-        `[crawler.getPage] error: ${JSON.stringify(e)}; value: ${JSON.stringify(
-          v,
-        )}`,
-      );
-      // 2. get all the nodes
-      distribution.local.groups.get('all', (e, nodes) => {
-        Object.keys(nodes).forEach((node) => {
-          let nodeConfig = nodes[node];
-          // 3. for each node, store.get the pages under 'pagesUrl' folder
-          console.log(`[TODO]: MODIFY THE KEY IN comm.send`);
-          distribution.local.comm.send(
-            [{gid: 'pagesUrl'}], //TODO: need to sync with store.get logic with [flexGid]
-            {node: nodeConfig, service: 'store', method: 'get'},
-            (e, pages) => {
-              // example: {page: 1, url: https://www.usenix.org/publications/proceedings?page=1}
-              // 4. crawl and store the articles on disk for each page
-              console.log(
-                `[store.get] error: ${JSON.stringify(
-                  e,
-                )}; value: ${JSON.stringify(v)}`,
-              );
-              pages.forEach((pageObj) => {
-                distribution.local.comm.send(
-                  [pageObj.url],
-                  {
-                    node: nodeConfig,
-                    service: 'crawler',
-                    method: 'getArticles',
-                  },
-                  (e, v) => {
-                    console.log(
-                      `[crawler.getArticles] error: ${JSON.stringify(
-                        e,
+      ['https://www.usenix.org/publications/proceedings'],
+      remote,
+      (e, v) => {
+        console.log(
+            `WARNING: do not use the values in the callback function.
+             It is only designed for tests.`,
+        );
+        console.log(
+            `[crawler.getPage] error: ${JSON.stringify(e)}; 
+            value: ${JSON.stringify(v)}`,
+        );
+        // 2. get all the nodes
+        distribution.local.groups.get('all', (e, nodes) => {
+          Object.keys(nodes).forEach((node) => {
+            let nodeConfig = nodes[node];
+            // 3. for each node, store.get the pages under 'pagesUrl' folder
+            console.log(`[TODO]: MODIFY THE KEY IN comm.send`);
+            distribution.local.comm.send(
+                [{gid: 'pagesUrl'}], 
+                // TODO: need to sync with store.get logic with [flexGid]
+                {node: nodeConfig, service: 'store', method: 'get'},
+                (e, pages) => {
+                  // example: {page: 1, url: https://www.usenix.org/publications/proceedings?page=1}
+                  // 4. crawl and store the articles on disk for each page
+                  console.log(
+                      `[store.get] error: ${JSON.stringify(
+                          e,
                       )}; value: ${JSON.stringify(v)}`,
+                  );
+                  pages.forEach((pageObj) => {
+                    distribution.local.comm.send(
+                        [pageObj.url],
+                        {
+                          node: nodeConfig,
+                          service: 'crawler',
+                          method: 'getArticles',
+                        },
+                        (e, v) => {
+                          console.log(
+                              `[crawler.getArticles] error: ${JSON.stringify(
+                                  e,
+                              )}; value: ${JSON.stringify(v)}`,
+                          );
+                          console.log('CRAWLING IS DONEEEE!!! CONGRATS!!!');
+                          cleanup();
+                        },
                     );
-                    console.log('CRAWLING IS DONEEEE!!! CONGRATS!!!');
-                    cleanup();
-                  },
-                );
-              });
-            },
-          );
+                  });
+                },
+            );
+          });
         });
-      });
-    },
+      },
   );
 }
 

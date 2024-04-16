@@ -30,12 +30,12 @@ if (args.port) {
 if (args.config) {
   let nodeConfig = util.deserialize(args.config);
   global.nodeConfig.ip = nodeConfig.ip ? nodeConfig.ip : global.nodeConfig.ip;
-  global.nodeConfig.port = nodeConfig.port
-    ? nodeConfig.port
-    : global.nodeConfig.port;
-  global.nodeConfig.onStart = nodeConfig.onStart
-    ? nodeConfig.onStart
-    : global.nodeConfig.onStart;
+  global.nodeConfig.port = nodeConfig.port ?
+    nodeConfig.port :
+    global.nodeConfig.port;
+  global.nodeConfig.onStart = nodeConfig.onStart ?
+    nodeConfig.onStart :
+    global.nodeConfig.onStart;
 }
 
 const distribution = {

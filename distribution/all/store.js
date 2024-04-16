@@ -11,8 +11,11 @@ const store = function(config) {
     throw new Error('Distribution not found');
   }
 
-  const baseFolderPath = path
-      .join(__dirname, '../../store', 's-' + id.getSID(global.nodeConfig));
+  const baseFolderPath = path.join(
+      __dirname,
+      '../../store',
+      's-' + id.getSID(global.nodeConfig),
+  );
   if (!fs.existsSync(baseFolderPath)) {
     fs.mkdirSync(baseFolderPath);
   }
@@ -21,7 +24,6 @@ const store = function(config) {
   if (!fs.existsSync(groupPath)) {
     fs.mkdirSync(groupPath);
   }
-
 
   return {
     put: function(value, key, callback) {
@@ -155,17 +157,17 @@ const store = function(config) {
 
         const targetIdx = nids.indexOf(expectedHash);
         const targetNode = nodesArray[targetIdx];
-        
+
         let keyWithGid;
 
-          if (typeof key === 'string') {
-            keyWithGid = {
-              key: key,
-              gid: context.gid,
-            };
-          } else {
-            keyWithGid = key;
-          }
+        if (typeof key === 'string') {
+          keyWithGid = {
+            key: key,
+            gid: context.gid,
+          };
+        } else {
+          keyWithGid = key;
+        }
 
         const message = [keyWithGid];
         const remoteWithNode = {
