@@ -73,7 +73,7 @@ function startCrawl(cleanup) {
             // 3. for each node, store.get the pages under 'pagesUrl' folder
             console.log(`[TODO]: MODIFY THE KEY IN comm.send`);
             distribution.local.comm.send(
-                [{gid: 'pagesUrl'}], 
+                [{gid: 'pagesUrl'}],
                 // TODO: need to sync with store.get logic with [flexGid]
                 {node: nodeConfig, service: 'store', method: 'get'},
                 (e, pages) => {
