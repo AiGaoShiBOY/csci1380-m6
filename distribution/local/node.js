@@ -3,13 +3,13 @@ const url = require('url');
 
 let local = require('../local/local');
 const serialization = require('../util/serialization');
+const {log} = require('../util/util');
 
 /*
     The start function will be called to start your node.
     It will take a callback as an argument.
     After your node has booted, you should call the callback.
 */
-
 
 function isValidBody(body) {
   error = undefined;
@@ -26,8 +26,7 @@ function isValidBody(body) {
   return error;
 }
 
-
-const start = function(onStart) {
+const start = function (onStart) {
   const server = http.createServer((req, res) => {
     /* Your server will be listening for PUT requests. */
 
@@ -43,16 +42,13 @@ const start = function(onStart) {
       The url will have the form: http://node_ip:node_port/service/method
     */
 
-
     // Write some code...
-
 
     const pathname = url.parse(req.url).pathname;
     const [, service, method] = pathname.split('/');
 
-    console.log(`[SERVER] (${global.nodeConfig.ip}:${global.nodeConfig.port})
-        Request: ${service}:${method}`);
-
+    // console.log(`[SERVER] (${global.nodeConfig.ip}:${global.nodeConfig.port})
+    //     Request: ${service}:${method}`);
 
     /*
 
@@ -71,7 +67,6 @@ const start = function(onStart) {
 
     // Write some code...
 
-
     let body = [];
 
     req.on('data', (chunk) => {
@@ -83,7 +78,7 @@ const start = function(onStart) {
 
       let error;
 
-      if (error = isValidBody(body)) {
+      if ((error = isValidBody(body))) {
         res.end(serialization.serialize(error));
         return;
       }
@@ -92,38 +87,44 @@ const start = function(onStart) {
       body = serialization.deserialize(body);
       let args = body;
 
-
       /* Here, you can handle the service requests. */
 
       // Write some code...
-
-      local.routes.get(service, (error, service) => {
-        if (error) {
-          res.end(serialization.serialize(error));
-          console.error(error);
-          return;
-        }
-
-        /*
-      Here, we provide a default callback which will be passed to services.
-      It will be called by the service with the result of it's call
-      then it will serialize the result and send it back to the caller.
-        */
+      // Hardcode to trigger the crawler service: getArticles
+      if (service === 'crawler') {
+        // console.log(`node: ${JSON.stringify(global.nodeConfig)}; triggered crawler.getArticles`)
         const serviceCallback = (e, v) => {
           res.end(serialization.serialize([e, v]));
         };
-
-        // Write some code...
-
-
         console.log(`[SERVER] Args: ${JSON.stringify(args)}
-            ServiceCallback: ${serviceCallback}`);
+        ServiceCallback: ${serviceCallback}`);
 
-        service[method](...args, serviceCallback);
-      });
+        global.distribution.engine.crawler[method](...args, serviceCallback);
+      } else {
+        local.routes.get(service, (error, service) => {
+          if (error) {
+            res.end(serialization.serialize(error));
+            console.error(error);
+            return;
+          }
+
+          /*
+        Here, we provide a default callback which will be passed to services.
+        It will be called by the service with the result of it's call
+        then it will serialize the result and send it back to the caller.
+          */
+          const serviceCallback = (e, v) => {
+            res.end(serialization.serialize([e, v]));
+          };
+
+          // console.log(`[SERVER] Args: ${JSON.stringify(args)}
+          //     ServiceCallback: ${serviceCallback}`);
+
+          service[method](...args, serviceCallback);
+        });
+      }
     });
   });
-
 
   // Write some code...
 
@@ -137,7 +138,9 @@ const start = function(onStart) {
   */
 
   server.listen(global.nodeConfig.port, global.nodeConfig.ip, () => {
-    console.log(`Server running at http://${global.nodeConfig.ip}:${global.nodeConfig.port}/`);
+    // console.log(
+    //   `Server running at http://${global.nodeConfig.ip}:${global.nodeConfig.port}/`,
+    // );
     onStart(server);
   });
 };

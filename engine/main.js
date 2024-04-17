@@ -3,13 +3,13 @@ const id = distribution.util.id;
 const groupsTemplate = require('../distribution/all/groups');
 
 // meta info
-global.nodeConfig = {ip: '127.0.0.1', port: 7011}; // local orchestrator
-const nodeNum = 5; // number of nodes in the distributed search engine
+global.nodeConfig = {ip: '127.0.0.1', port: 8011}; // local orchestrator
+const nodeNum = 1; // number of nodes in the distributed search engine
 let localServer = null; // neede to gracefully shutdown all nodes
 let engineGroup = {};
 let engineNodes = [];
 for (let i = 0; i < nodeNum; ++i) {
-  let port = 7001 + i;
+  let port = 8001 + i;
   let node = {ip: '127.0.0.1', port: port};
   engineGroup[id.getSID(node)] = node;
   engineNodes.push(node);
@@ -50,42 +50,59 @@ function shutdownNodes() {
 }
 
 function startCrawl(cleanup) {
-  console.log('TO IMPLEMENT crawl!');
-  let remote = {service: 'cralwer', method: 'getPage'};
-  remote.node = engineNodes[0];
-  // 1. crawl and store the pages on disk
-  distribution.local.comm.send(
-      ['https://www.usenix.org/publications/proceedings'],
-      remote,
-      (e, v) => {
-        console.log(
-            `WARNING: do not use the values in the callback function.
-             It is only designed for tests.`,
-        );
-        console.log(
-            `[crawler.getPage] error: ${JSON.stringify(e)}; 
-            value: ${JSON.stringify(v)}`,
-        );
-        // 2. get all the nodes
-        distribution.local.groups.get('all', (e, nodes) => {
-          Object.keys(nodes).forEach((node) => {
-            let nodeConfig = nodes[node];
-            // 3. for each node, store.get the pages under 'pagesUrl' folder
-            console.log(`[TODO]: MODIFY THE KEY IN comm.send`);
-            distribution.local.comm.send(
-                [{gid: 'pagesUrl'}],
-                // TODO: need to sync with store.get logic with [flexGid]
-                {node: nodeConfig, service: 'store', method: 'get'},
-                (e, pages) => {
-                  // example: {page: 1, url: https://www.usenix.org/publications/proceedings?page=1}
-                  // 4. crawl and store the articles on disk for each page
-                  console.log(
-                      `[store.get] error: ${JSON.stringify(
-                          e,
-                      )}; value: ${JSON.stringify(v)}`,
-                  );
-                  pages.forEach((pageObj) => {
-                    distribution.local.comm.send(
+  distribution.engine.crawler.getPage(
+    'https://www.usenix.org/publications/proceedings',
+    (e, v) => {
+      if (e) {
+        console.log(`[crawler.getPage]: ${JSON.stringify(e)}`);
+        cleanup();
+      }
+
+      // 2. get all the nodes
+      distribution.local.groups.get('engine', (e, nodes) => {
+        if (e) {
+          console.log(`[local.groups.get(engine)]: ${JSON.stringify(e)}`);
+          cleanup();
+        }
+
+        // 3. for each node, store.get the pages under 'pagesUrl' folder
+        Object.keys(nodes).forEach((node) => {
+          let nodeConfig = nodes[node];
+          distribution.local.comm.send(
+            [{gid: 'pagesUrl'}],
+            {node: nodeConfig, service: 'store', method: 'get'},
+            (e, pageKeys) => {
+              if (e) {
+                console.log(`[local.comm.send(store.get(pagesUrl))] ${e}`);
+                cleanup();
+              }
+
+              // 4. for each page key, retrive the page obj
+              pageKeys.forEach((pageKey) => {
+                distribution.local.comm.send(
+                  [{key: pageKey, gid: 'pagesUrl'}],
+                  {
+                    node: nodeConfig,
+                    service: 'store',
+                    method: 'get',
+                  },
+                  (e, pageObj) => {
+                    if (e) {
+                      console.log(
+                        `[local.comm.send(store.get(pageKey))]: ${e}`,
+                      );
+                      cleanup();
+                    }
+                    if (pageObj) {
+                      console.log(
+                        `[local.comm.send(store.get(pageKey))]: ${JSON.stringify(
+                          pageObj,
+                        )}`,
+                      );
+
+                      console.log(`before reached getArticles: ${pageObj.url}`);
+                      // 5. crawl the articles from each page
+                      distribution.local.comm.send(
                         [pageObj.url],
                         {
                           node: nodeConfig,
@@ -93,21 +110,30 @@ function startCrawl(cleanup) {
                           method: 'getArticles',
                         },
                         (e, v) => {
-                          console.log(
-                              `[crawler.getArticles] error: ${JSON.stringify(
-                                  e,
-                              )}; value: ${JSON.stringify(v)}`,
-                          );
-                          console.log('CRAWLING IS DONEEEE!!! CONGRATS!!!');
-                          cleanup();
+                          // TODO: crawled only one page 119
+                          console.log(`after reached getArticles: ${pageObj.url}`);
+
+                          if (e) {
+                            console.log(
+                              `[local.comm.send(crawler.getArticles(url))]\n
+                              node: ${JSON.stringify(nodeConfig)}\n
+                              ${e}`,
+                            );
+                            cleanup();
+                          } else{
+                            console.log(v);
+                          }
                         },
-                    );
-                  });
-                },
-            );
-          });
+                      );
+                    }
+                  },
+                );
+              });
+            },
+          );
         });
-      },
+      });
+    },
   );
 }
 
