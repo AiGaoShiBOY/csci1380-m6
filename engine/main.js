@@ -138,6 +138,7 @@ function startCrawl(cleanup) {
             },
           );
         }
+        setTimeout(cleanup, 30000) // TODO: shut down the program after 30s
         // );
       });
     },
