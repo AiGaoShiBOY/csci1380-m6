@@ -3,13 +3,13 @@ const id = distribution.util.id;
 const groupsTemplate = require('../distribution/all/groups');
 
 // meta info
-global.nodeConfig = {ip: '127.0.0.1', port: 8011}; // local orchestrator
-const nodeNum = 1; // number of nodes in the distributed search engine
+global.nodeConfig = {ip: '127.0.0.1', port: 7000}; // local orchestrator
+const nodeNum = 5; // number of nodes in the distributed search engine
 let localServer = null; // neede to gracefully shutdown all nodes
 let engineGroup = {};
 let engineNodes = [];
 for (let i = 0; i < nodeNum; ++i) {
-  let port = 8001 + i;
+  let port = 7001 + i;
   let node = {ip: '127.0.0.1', port: port};
   engineGroup[id.getSID(node)] = node;
   engineNodes.push(node);
@@ -54,7 +54,7 @@ function startCrawl(cleanup) {
     'https://www.usenix.org/publications/proceedings',
     (e, v) => {
       if (e) {
-        console.log(`[crawler.getPage]: ${JSON.stringify(e)}`);
+        console.log(`[crawler.getPage]: ${e}`);
         cleanup();
       }
 
@@ -66,7 +66,8 @@ function startCrawl(cleanup) {
         }
 
         // 3. for each node, store.get the pages under 'pagesUrl' folder
-        Object.keys(nodes).forEach((node) => {
+        // Object.keys(nodes).forEach((node) => {
+        for (const node of Object.keys(nodes)) {
           let nodeConfig = nodes[node];
           distribution.local.comm.send(
             [{gid: 'pagesUrl'}],
@@ -76,62 +77,68 @@ function startCrawl(cleanup) {
                 console.log(`[local.comm.send(store.get(pagesUrl))] ${e}`);
                 cleanup();
               }
+              if (pageKeys) {
+                // 4. for each page key, retrive the page obj
+                pageKeys.forEach((pageKey) => {
+                  distribution.local.comm.send(
+                    [{key: pageKey, gid: 'pagesUrl'}],
+                    {
+                      node: nodeConfig,
+                      service: 'store',
+                      method: 'get',
+                    },
+                    (e, pageObj) => {
+                      if (e) {
+                        console.log(
+                          `[local.comm.send(store.get(pageKey))]: ${e}`,
+                        );
+                        cleanup();
+                      }
+                      if (pageObj) {
+                        console.log(
+                          `[local.comm.send(store.get(pageKey))]: ${JSON.stringify(
+                            pageObj,
+                          )}`,
+                        );
 
-              // 4. for each page key, retrive the page obj
-              pageKeys.forEach((pageKey) => {
-                distribution.local.comm.send(
-                  [{key: pageKey, gid: 'pagesUrl'}],
-                  {
-                    node: nodeConfig,
-                    service: 'store',
-                    method: 'get',
-                  },
-                  (e, pageObj) => {
-                    if (e) {
-                      console.log(
-                        `[local.comm.send(store.get(pageKey))]: ${e}`,
-                      );
-                      cleanup();
-                    }
-                    if (pageObj) {
-                      console.log(
-                        `[local.comm.send(store.get(pageKey))]: ${JSON.stringify(
-                          pageObj,
-                        )}`,
-                      );
-
-                      console.log(`before reached getArticles: ${pageObj.url}`);
-                      // 5. crawl the articles from each page
-                      distribution.local.comm.send(
-                        [pageObj.url],
-                        {
-                          node: nodeConfig,
-                          service: 'crawler',
-                          method: 'getArticles',
-                        },
-                        (e, v) => {
-                          // TODO: crawled only one page 119
-                          console.log(`after reached getArticles: ${pageObj.url}`);
-
-                          if (e) {
+                        console.log(
+                          `before reached getArticles: ${pageObj.url}`,
+                        );
+                        // 5. crawl the articles from each page
+                        distribution.local.comm.send(
+                          [pageObj.url],
+                          {
+                            node: nodeConfig,
+                            service: 'crawler',
+                            method: 'getArticles',
+                          },
+                          (e, v) => {
+                            // TODO: crawled only one page 119
                             console.log(
-                              `[local.comm.send(crawler.getArticles(url))]\n
+                              `after reached getArticles: ${pageObj.url}`,
+                            );
+
+                            if (e) {
+                              console.log(
+                                `[local.comm.send(crawler.getArticles(url))]\n
                               node: ${JSON.stringify(nodeConfig)}\n
                               ${e}`,
-                            );
-                            cleanup();
-                          } else{
-                            console.log(v);
-                          }
-                        },
-                      );
-                    }
-                  },
-                );
-              });
+                              );
+                              cleanup();
+                            } else {
+                              console.log(v);
+                            }
+                          },
+                        );
+                      }
+                    },
+                  );
+                });
+              }
             },
           );
-        });
+        }
+        // );
       });
     },
   );
