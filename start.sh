@@ -1,0 +1,1 @@
+node engine/main.js > log.txt

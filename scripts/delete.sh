@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # Array of port numbers
-ports=(8001 8002 8003 8004 8005)
+ports=(7000 7001 7002 7003 7004 7005 7006 7007 7008 7009 7010
+# 7011 7012 7013 7014 7015 7016 7017 7018 7019 7020
+# 7021 7022 7023 7024 7025 7026 7027 7028 7029 7030
+)
 
 # Loop through each port number
 for port in "${ports[@]}"; do
@@ -20,3 +23,5 @@ for port in "${ports[@]}"; do
         echo "No processes found using port $port."
     fi
 done
+
+rm -r store/ && rm log.txt && mkdir store
