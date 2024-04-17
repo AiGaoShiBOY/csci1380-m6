@@ -9,7 +9,8 @@ const crawler = function (config) {
   let distribution = global.distribution;
   context.gid = config.gid || 'all';
   context.hash = config.hash || id.naiveHash;
-  var c = new Crawler({rateLimit: 10001});
+  var c = new Crawler();
+  // {rateLimit: 1000}
 
   return {
     getPage: (baseUrl, getPagecallback) => {
@@ -19,7 +20,7 @@ const crawler = function (config) {
       c.queue([
         {
           uri: baseUrl,
-          rateLimit: 1,
+          // rateLimit: 1000,
           callback: function (error, res, cb) {
             if (error) {
               getPagecallback(error);
@@ -78,6 +79,7 @@ const crawler = function (config) {
       c.queue([
         {
           uri: pageUrl,
+          // rateLimit: 1000,
           callback: function (error, res, cb) {
             if (error) {
               getArticlesCallback(error);
@@ -134,7 +136,7 @@ const crawler = function (config) {
 
     getArticle: (articleUrl, articleObj, getArticleCallback) => {
       var subC = new Crawler({
-        rateLimit: 1,
+        // rateLimit: 1000,
         callback: function (error, res, cb) {
           if (error) {
             getArticleCallback(e);
