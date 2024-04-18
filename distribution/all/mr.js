@@ -69,15 +69,14 @@ const mr = function (config) {
               service: mrId,
               method: 'reduce',
             };
-            callback(null, mappedKeys);
-            // distribution[context.gid].comm.send(message, remote, (e, v) => {
-            //   const values = Object.values(v);
-            //   const nonEmptyResults = values.filter(
-            //     (arr) => arr && arr.length > 0,
-            //   );
-            //   const result = nonEmptyResults.flat();
-            //   callback(null, result);
-            // });
+            distribution[context.gid].comm.send(message, remote, (e, v) => {
+              const values = Object.values(v);
+              const nonEmptyResults = values.filter(
+                (arr) => arr && arr.length > 0,
+              );
+              const result = nonEmptyResults.flat();
+              callback(null, result);
+            });
           });
         });
       });
@@ -93,7 +92,6 @@ const mapWrapper = function (keys, gid, mapper, memory, callback) {
     global.distribution.local.store.get({key: key, gid: gid}, (e, v) => {
       // if the key stores in the local storage
       if (v) {
-        // console.log(v, "bingo");
         // apply the mapper on the data
         const mappedData = mapper(key, v);
         // store the data
@@ -143,9 +141,9 @@ const shuffleWrapper = function (
           let cnt2 = value.length;
           for (const obj of value) {
             let [newKey, newVal] = Object.entries(obj)[0];
-            if (newKey === 'Unite Mixte Bull-IMAG/Systemes') {
-              cnt2--;
-              continue;
+            // if the key contains "/", remove it to avoid conflicts with paths
+            if (newKey.includes('/')) {
+              newKey = newKey.replace(/\//g, '');
             }
             keySet.push(newKey);
             const newKeyWithGid = {
@@ -197,10 +195,9 @@ const shuffleWrapper = function (
 
 const reduceWrapper = function (keys, gid, reducer, out, memory, callback) {
   let cnt = keys.length;
-  console.log(keys);
   let resultArr = [];
   keys.forEach((key) => {
-    global.distribution.local[memory].get(
+    global.distribution.local[memory].del(
       {key: key, gid: 'shuffleResult'},
       (e, v) => {
         // get the value from storage

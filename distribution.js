@@ -57,6 +57,9 @@ distribution['all'].store = require('./distribution/all/store')({gid: 'all'});
 distribution['all'].crawler = require('./distribution/all/crawler')({
   gid: 'all',
 });
+distribution['all'].query = require('./distribution/all/query')({
+  gid: 'all',
+});
 
 module.exports = global.distribution;
 

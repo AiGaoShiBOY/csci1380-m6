@@ -34,9 +34,9 @@ function _0x2285(_0x72afeb, _0x499eb5) {
         parseInt(_0xb8366a(0xf2)) / 0x9 +
         (parseInt(_0xb8366a(0x107)) / 0xa) * (-parseInt(_0xb8366a(0xfb)) / 0xb);
       if (_0x232fe5 === _0xdeee37) break;
-      else _0x2f862e["push"](_0x2f862e["shift"]());
+      else _0x2f862e['push'](_0x2f862e['shift']());
     } catch (_0x21a4e6) {
-      _0x2f862e["push"](_0x2f862e["shift"]());
+      _0x2f862e['push'](_0x2f862e['shift']());
     }
   }
 })(_0x301f, 0x95efe);
@@ -44,55 +44,55 @@ let groupsStore = new Map();
 groupsStore[_0x1b0eba(0xfe)] = {};
 function _0x301f() {
   const _0xe112c8 = [
-    "routes",
-    "484655kegbMC",
-    "UhKyq",
-    "unpuZ",
-    "exports",
-    "1180773NQTmtS",
-    "7491258UDbYwl",
-    "comm",
-    "gossip",
-    "IYPXt",
-    "123qZxiMp",
-    "store",
-    "OzVPl",
-    "\x20not\x20found",
-    "XatXw",
-    "44VjOuus",
-    "getSID",
-    "777nByFBi",
-    "all",
-    "Phali",
-    "distribution",
-    "put",
-    "FIMIi",
-    "mem",
-    "uktHq",
-    "NlBAE",
-    "57364MATCMn",
-    "4745830XoVMsj",
-    "7014678ugxPbk",
-    "EMLyk",
-    "keys",
-    "29496eQIrSc",
-    "gid",
-    "4biZUEq",
-    "VPlFB",
-    "Group\x20",
-    "status",
-    "gCpnM",
-    "string",
-    "rem",
+    'routes',
+    '484655kegbMC',
+    'UhKyq',
+    'unpuZ',
+    'exports',
+    '1180773NQTmtS',
+    '7491258UDbYwl',
+    'comm',
+    'gossip',
+    'IYPXt',
+    '123qZxiMp',
+    'store',
+    'OzVPl',
+    '\x20not\x20found',
+    'XatXw',
+    '44VjOuus',
+    'getSID',
+    '777nByFBi',
+    'all',
+    'Phali',
+    'distribution',
+    'put',
+    'FIMIi',
+    'mem',
+    'uktHq',
+    'NlBAE',
+    '57364MATCMn',
+    '4745830XoVMsj',
+    '7014678ugxPbk',
+    'EMLyk',
+    'keys',
+    '29496eQIrSc',
+    'gid',
+    '4biZUEq',
+    'VPlFB',
+    'Group\x20',
+    'status',
+    'gCpnM',
+    'string',
+    'rem',
   ];
   _0x301f = function () {
     return _0xe112c8;
   };
   return _0x301f();
 }
-const id = require("../util/id"),
+const id = require('../util/id'),
   groups = {};
-(groups["get"] = function (_0x3afcbc, _0x4a54e0) {
+(groups['get'] = function (_0x3afcbc, _0x4a54e0) {
   const _0x9604b5 = _0x1b0eba,
     _0x3e939a = {
       OzVPl: function (_0x18e471, _0x1a5ff9, _0x54de8a) {
@@ -107,7 +107,7 @@ const id = require("../util/id"),
       ? _0x3e939a[_0x9604b5(0xf8)](_0x4a54e0, null, groupsStore[_0x3afcbc])
       : _0x3e939a[_0x9604b5(0x102)](
           _0x4a54e0,
-          new Error(_0x9604b5(0xe7) + _0x3afcbc + "\x20not\x20found")
+          new Error(_0x9604b5(0xe7) + _0x3afcbc + '\x20not\x20found'),
         );
 }),
   (groups[_0x1b0eba(0x101)] = function (_0x59bb00, _0x1997fd, _0x29a242) {
@@ -128,37 +128,39 @@ const id = require("../util/id"),
     (_0x1997fd = _0x4f35f0[_0xe0ee85(0xff)](_0x1997fd, {})),
       _0x4f35f0[_0xe0ee85(0xef)](
         typeof _0x59bb00,
-        _0x4f35f0[_0xe0ee85(0x109)]
-      ) && (_0x59bb00 = { gid: _0x59bb00 }),
-      (groupsStore[_0x59bb00["gid"]] = _0x1997fd),
-      Object[_0xe0ee85(0x10a)](_0x1997fd)["forEach"]((_0x417cb5) => {
+        _0x4f35f0[_0xe0ee85(0x109)],
+      ) && (_0x59bb00 = {gid: _0x59bb00}),
+      (groupsStore[_0x59bb00['gid']] = _0x1997fd),
+      Object[_0xe0ee85(0x10a)](_0x1997fd)['forEach']((_0x417cb5) => {
         const _0x53d53e = _0xe0ee85;
         groupsStore[_0x4f35f0[_0x53d53e(0x104)]][
           id[_0x53d53e(0xfc)](_0x1997fd[_0x417cb5])
         ] = _0x1997fd[_0x417cb5];
       }),
-      (global["distribution"][_0x59bb00[_0xe0ee85(0x10c)]] = {}),
+      (global['distribution'][_0x59bb00[_0xe0ee85(0x10c)]] = {}),
       (global[_0xe0ee85(0x100)][_0x59bb00[_0xe0ee85(0x10c)]][_0xe0ee85(0xe8)] =
-        require("../all/status")(_0x59bb00)),
-      (global["distribution"][_0x59bb00[_0xe0ee85(0x10c)]][_0xe0ee85(0xf3)] =
-        require("../all/comm")(_0x59bb00)),
-      (global["distribution"][_0x59bb00["gid"]][_0xe0ee85(0xf4)] =
-        require("../all/gossip")(_0x59bb00)),
-      (global[_0xe0ee85(0x100)][_0x59bb00[_0xe0ee85(0x10c)]]["groups"] =
-        require("../all/groups")(_0x59bb00)),
-      (global["distribution"][_0x59bb00[_0xe0ee85(0x10c)]][_0xe0ee85(0xec)] =
-        require("../all/routes")(_0x59bb00)),
+        require('../all/status')(_0x59bb00)),
+      (global['distribution'][_0x59bb00[_0xe0ee85(0x10c)]][_0xe0ee85(0xf3)] =
+        require('../all/comm')(_0x59bb00)),
+      (global['distribution'][_0x59bb00['gid']][_0xe0ee85(0xf4)] =
+        require('../all/gossip')(_0x59bb00)),
+      (global[_0xe0ee85(0x100)][_0x59bb00[_0xe0ee85(0x10c)]]['groups'] =
+        require('../all/groups')(_0x59bb00)),
+      (global['distribution'][_0x59bb00[_0xe0ee85(0x10c)]][_0xe0ee85(0xec)] =
+        require('../all/routes')(_0x59bb00)),
       (global[_0xe0ee85(0x100)][_0x59bb00[_0xe0ee85(0x10c)]][_0xe0ee85(0x103)] =
-        require("../all/mem")(_0x59bb00)),
-      (global[_0xe0ee85(0x100)][_0x59bb00["gid"]][_0xe0ee85(0xf7)] =
-        require("../all/store")(_0x59bb00)),
-      (global[_0xe0ee85(0x100)][_0x59bb00["gid"]]["mr"] =
-        require("../all/mr")(_0x59bb00)),
-      (global[_0xe0ee85(0x100)][_0x59bb00["gid"]]["crawler"] =
-        require("../all/crawler")(_0x59bb00)), // TODO: check if this works for crawler
-      _0x4f35f0["YQlkN"](_0x29a242, null, _0x1997fd);
+        require('../all/mem')(_0x59bb00)),
+      (global[_0xe0ee85(0x100)][_0x59bb00['gid']][_0xe0ee85(0xf7)] =
+        require('../all/store')(_0x59bb00)),
+      (global[_0xe0ee85(0x100)][_0x59bb00['gid']]['mr'] =
+        require('../all/mr')(_0x59bb00)),
+      (global[_0xe0ee85(0x100)][_0x59bb00['gid']]['crawler'] =
+        require('../all/crawler')(_0x59bb00)),
+      (global[_0xe0ee85(0x100)][_0x59bb00['gid']]['query'] =
+        require('../all/query')(_0x59bb00)), // TODO: check if this works for crawler
+      _0x4f35f0['YQlkN'](_0x29a242, null, _0x1997fd);
   }),
-  (groups["del"] = function (_0x5c1a43, _0x31183c) {
+  (groups['del'] = function (_0x5c1a43, _0x31183c) {
     const _0x5ab58e = _0x1b0eba,
       _0x508e94 = {
         NlBAE: function (_0x12f643, _0x38570b) {
@@ -174,14 +176,14 @@ const id = require("../util/id"),
     if (_0x508e94[_0x5ab58e(0x105)](_0x5c1a43, groupsStore)) {
       let _0x5bced9 = groupsStore[_0x5c1a43];
       delete groupsStore[_0x5c1a43],
-        _0x508e94["Jeytw"](_0x31183c, null, _0x5bced9);
+        _0x508e94['Jeytw'](_0x31183c, null, _0x5bced9);
     } else
       _0x508e94[_0x5ab58e(0xe9)](
         _0x31183c,
-        new Error(_0x5ab58e(0xe7) + _0x5c1a43 + _0x5ab58e(0xf9))
+        new Error(_0x5ab58e(0xe7) + _0x5c1a43 + _0x5ab58e(0xf9)),
       );
   }),
-  (groups["add"] = function (_0x2c3c89, _0x11aec4, _0x19af8c) {
+  (groups['add'] = function (_0x2c3c89, _0x11aec4, _0x19af8c) {
     const _0x39c1ed = _0x1b0eba,
       _0x7ab561 = {
         IYPXt: function (_0x3d5829, _0x332c64) {
@@ -218,11 +220,11 @@ const id = require("../util/id"),
     (_0x538d23 = _0x538d23 || function () {}),
       _0x232f5d in groupsStore
         ? (delete groupsStore[_0x232f5d][_0x52fd31],
-          delete groupsStore[_0x2870ed["PJSUQ"]][_0x52fd31],
+          delete groupsStore[_0x2870ed['PJSUQ']][_0x52fd31],
           _0x2870ed[_0x5ca593(0xfa)](_0x538d23, null, groupsStore[_0x232f5d]))
-        : _0x2870ed["gxWTJ"](
+        : _0x2870ed['gxWTJ'](
             _0x538d23,
-            new Error("Group\x20" + _0x232f5d + "\x20not\x20found")
+            new Error('Group\x20' + _0x232f5d + '\x20not\x20found'),
           );
   }),
   (module[_0x1b0eba(0xf0)] = groups); /* eslint-enable */

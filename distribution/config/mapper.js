@@ -1,7 +1,7 @@
 const mapByAuthor = (key, value) => {
   let authorarray;
   if (value.authors.includes(';')) {
-    const group = message2.split(';');
+    const group = value.authors.split(';');
     const out = group.map((part) => {
       elements = part.split(', ');
       return elements[0];

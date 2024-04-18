@@ -109,9 +109,6 @@ store.get = function (key, callback) {
 };
 
 store.del = function (key, callback) {
-  if (key === 'it') {
-    console.log('store.js 105', key);
-  }
   callback = callback || function () {};
   let realKey;
   let gid;
@@ -166,10 +163,6 @@ store.append = function (value, key, callback) {
   } else {
     realKey = key.key || id.getID(value);
     gid = key.gid;
-  }
-
-  if (realKey === 'Carnegie Mellon University') {
-    console.log(realKey, value);
   }
 
   const baseFolderPath = path.join(

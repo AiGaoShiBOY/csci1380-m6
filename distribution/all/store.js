@@ -316,7 +316,6 @@ const store = function (config) {
         };
         distribution.local.comm.send(message, remoteWithNode, (e, v) => {
           if (e) {
-            console.log(e);
             callback(e, null);
             return;
           }
