@@ -8,6 +8,15 @@ const mr = function(config) {
   return {
     exec: (configuration, callback) => {
       /* Change this with your own exciting Map Reduce code! */
+
+      // in order to access the store position inside the node for m6
+      let flexGid;
+      if (configuration.hasOwnProperty('flexGid')) {
+        flexGid = configuration.flexGid;
+      } else {
+        flexGid = context.gid;
+      }
+
       const keys = configuration.keys;
       if (keys === undefined) {
         callback(new Error('Configuration invalid'), null);
@@ -37,14 +46,14 @@ const mr = function(config) {
         reduce: reduceWrapper,
       };
 
-      distribution[context.gid].routes.put(mrService, mrId, (e, v)=>{
-        const message = [keys, context.gid, mapper, memory];
+      distribution[context.gid].routes.put(mrService, mrId, (e, v) => {
+        const message = [keys, flexGid, mapper, memory];
         const remote = {
           service: mrId,
           method: 'map',
         };
-        distribution[context.gid].comm.send(message, remote, (e, v) =>{
-          const message = [keys, context.gid, memory, compactor];
+        distribution[context.gid].comm.send(message, remote, (e, v) => {
+          const message = [keys, context.gid, flexGid, memory, compactor];
           const remote = {
             service: mrId,
             method: 'shuffle',
@@ -54,15 +63,16 @@ const mr = function(config) {
             const flattenedValues = values.flat();
             const keySet = new Set(flattenedValues);
             const mappedKeys = [...keySet];
-            const message = [mappedKeys, context.gid, reducer, out, memory];
+            const message = [mappedKeys, flexGid, reducer, out, memory];
             const remote = {
               service: mrId,
               method: 'reduce',
             };
-            distribution[context.gid].comm.send(message, remote, (e, v)=>{
+            distribution[context.gid].comm.send(message, remote, (e, v) => {
               const values = Object.values(v);
-              const nonEmptyResults = values.filter((arr) =>
-                arr && arr.length > 0);
+              const nonEmptyResults = values.filter(
+                  (arr) => arr && arr.length > 0,
+              );
               const result = nonEmptyResults.flat();
               callback(null, result);
             });
@@ -81,17 +91,21 @@ const mapWrapper = function(keys, gid, mapper, memory, callback) {
     global.distribution.local.store.get({key: key, gid: gid}, (e, v) => {
       // if the key stores in the local storage
       if (v) {
+        // console.log(v, "bingo");
         // apply the mapper on the data
         const mappedData = mapper(key, v);
         // store the data
-        global.distribution.local[memory]
-            .put(mappedData, {key: key, gid: gid}, (e, v)=>{
+        global.distribution.local[memory].put(
+            mappedData,
+            {key: key, gid: gid},
+            (e, v) => {
               cnt--;
               if (cnt === 0) {
                 callback(null, 1);
                 return;
               }
-            });
+            },
+        );
       } else {
         cnt--;
         if (cnt === 0) {
@@ -103,7 +117,14 @@ const mapWrapper = function(keys, gid, mapper, memory, callback) {
   });
 };
 
-const shuffleWrapper = function(keys, gid, memory, compactor, callback) {
+const shuffleWrapper = function(
+    keys,
+    contextgid,
+    gid,
+    memory,
+    compactor,
+    callback,
+) {
   let cnt = keys.length;
   let keySet = [];
 
@@ -111,7 +132,10 @@ const shuffleWrapper = function(keys, gid, memory, compactor, callback) {
     // get the key from local storage
     global.distribution.local[memory].get({key: key, gid: gid}, (e, v) => {
       // currently, key is 000 and value is [{1950, 0}]
+      console.log(v, 'after mem get');
+
       if (v) {
+        // console.log(v, "after mem get");
         let value;
         if (compactor) {
           value = compactor(v);
@@ -128,8 +152,10 @@ const shuffleWrapper = function(keys, gid, memory, compactor, callback) {
               gid: 'hello' + gid,
             };
             // save it to memory! This apart cannot be persistance
-            global.distribution[gid]['mem']
-                .append(newVal, newKeyWithGid, (e, v) => {
+            global.distribution[contextgid]['mem'].append(
+                newVal,
+                newKeyWithGid,
+                (e, v) => {
                   cnt2--;
                   if (cnt2 === 0) {
                     cnt--;
@@ -137,7 +163,8 @@ const shuffleWrapper = function(keys, gid, memory, compactor, callback) {
                       callback(null, keySet);
                     }
                   }
-                });
+                },
+            );
           }
         } else {
           let [newKey, newVal] = Object.entries(value)[0];
@@ -146,13 +173,16 @@ const shuffleWrapper = function(keys, gid, memory, compactor, callback) {
             key: newKey,
             gid: 'hello' + gid,
           };
-          global.distribution[gid]['mem']
-              .append(newVal, newKeyWithGid, (e, v) => {
+          global.distribution[contextgid]['mem'].append(
+              newVal,
+              newKeyWithGid,
+              (e, v) => {
                 cnt--;
                 if (cnt === 0) {
                   callback(null, keySet);
                 }
-              });
+              },
+          );
         }
       } else {
         cnt--;
@@ -169,27 +199,25 @@ const reduceWrapper = function(keys, gid, reducer, out, memory, callback) {
   let cnt = keys.length;
   let resultArr = [];
   keys.forEach((key) => {
-    global.distribution.local['mem']
-        .del({key: key, gid: 'hello' + gid}, (e, v)=>{
-          // get the value from storage
+    global.distribution.local['mem'].del(
+        {key: key, gid: 'hello' + gid},
+        (e, v) => {
+        // get the value from storage
           if (v) {
             const reduceRes = reducer(key, v);
-            if (key === 'It') {
-              console.log('crazy v is', v, key, reduceRes);
-            }
-            if (key === 'it') {
-              console.log('shit v is', v, reduceRes);
-            }
             // store the res to out group
             if (out) {
-              global.distribution[gid][memory]
-                  .append(reduceRes, {key: key, gid: out}, (e, v) => {
+              global.distribution[gid][memory].append(
+                  reduceRes,
+                  {key: key, gid: out},
+                  (e, v) => {
                     cnt--;
                     resultArr.push(reduceRes);
                     if (cnt === 0) {
                       callback(null, resultArr);
                     }
-                  });
+                  },
+              );
             } else {
               cnt--;
               resultArr.push(reduceRes);
@@ -203,7 +231,8 @@ const reduceWrapper = function(keys, gid, reducer, out, memory, callback) {
               callback(null, resultArr);
             }
           }
-        });
+        },
+    );
   });
 };
 

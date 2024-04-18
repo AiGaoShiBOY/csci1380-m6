@@ -24,6 +24,7 @@ mem.put = function(value, key, callback) {
     localMap = global.localMapSet.get(gid);
   }
   localMap.set(realKey, value);
+  console.log(localMap, 'mem-put');
   callback(null, value);
   return;
 };

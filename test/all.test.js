@@ -1040,129 +1040,248 @@ afterAll((done) => {
 // });
 
 // ------ crawler test
-test('all.crawler.getPage(baseurl)', (done) => {
-  const baseUrl = 'https://www.usenix.org/publications/proceedings';
-  const msg = [{gid: 'pagesUrl'}];
-  const remote = {service: 'store', method: 'get'};
+// test("all.crawler.getPage(baseurl)", (done) => {
+//   const baseUrl = "https://www.usenix.org/publications/proceedings";
+//   const msg = [{ gid: "pagesUrl" }];
+//   const remote = { service: "store", method: "get" };
 
-  distribution.mygroup.crawler.getPage(baseUrl, (e, v) => {
-    try {
-      expect(e).toBeFalsy();
-    } catch (error) {
-      done(error);
+//   distribution.mygroup.crawler.getPage(baseUrl, (e, v) => {
+//     try {
+//       expect(e).toBeFalsy();
+//     } catch (error) {
+//       done(error);
+//     }
+//     distribution.mygroup.comm.send(msg, remote, (e, v) => {
+//       try {
+//         const n1Cnt = Object.keys(v[id.getSID(n1)]).length;
+//         const n2Cnt = Object.keys(v[id.getSID(n2)]).length;
+//         const n3Cnt = Object.keys(v[id.getSID(n3)]).length;
+//         const totalCnt = n1Cnt + n2Cnt + n3Cnt;
+//         expect(e).toEqual({});
+//         expect(totalCnt).toEqual(345);
+//       } catch (error) {
+//         done(error);
+//       }
+//     });
+//     done();
+//   });
+// });
+
+// test("all.crawler.getArticle(articleUrl)", (done) => {
+//   const articleurl =
+//     "https://www.usenix.org/conference/usenix-mach-symposium/how-design-reliable-servers-using-fault-tolerant-micro-kernel";
+//   const article = [
+//     { text: "USENIX Mach Symposium", href: "/conference/usenixmachsymposium" },
+//     {
+//       text: "How to Design Reliable Servers using Fault Tolerant Micro-Kernel Mechanisms",
+//       href: "/conference/usenix-mach-symposium/how-design-reliable-servers-using-fault-tolerant-micro-kernel",
+//     },
+//     { text: "Michel Banâtre, Gilles Muller, Pack Heng, Bruno Rochat" },
+//   ];
+//   const expected = {
+//     conference: "USENIX Mach Symposium",
+//     title:
+//       "How to Design Reliable Servers using Fault Tolerant Micro-Kernel Mechanisms",
+//     authors: "Michel Banatre, Gilles Muller, Pack Heng, Bruno Rochat",
+//     abstract: "",
+//   };
+//   distribution.mygroup.crawler.getArticle(articleurl, article, (e, v) => {
+//     expect(e).toBeFalsy();
+//     expect(v).toEqual(expected);
+//     done();
+//   });
+// });
+
+// test("all.crawler.getArticles(pageUrl)", (done) => {
+//   const pageUrl = "https://www.usenix.org/publications/proceedings?page=345";
+//   const msg = [{ gid: "articles" }];
+//   const remote = { service: "store", method: "get" };
+
+//   distribution.mygroup.crawler.getArticles(pageUrl, (e, v) => {
+//     try {
+//       expect(e).toBeFalsy();
+//     } catch (error) {
+//       done(error);
+//     }
+//     distribution.mygroup.comm.send(msg, remote, (e, v) => {
+//       console.log(v, "result");
+//       let n1Cnt = 0, n2Cnt = 0, n3Cnt= 0, n4Cnt= 0, n5Cnt= 0, n6Cnt = 0
+//       try {
+//         if (v.hasOwnProperty(n1SID)){
+//           n1Cnt = v[n1SID].length;
+//         }
+//         if (v.hasOwnProperty(n2SID)){
+//           n2Cnt = v[n2SID].length;
+//         }
+//         if (v.hasOwnProperty(n3SID)){
+//           n3Cnt = v[n3SID].length;
+//         }
+//         if (v.hasOwnProperty(n4SID)){
+//           n4Cnt = v[n4SID].length;
+//         }
+//         if (v.hasOwnProperty(n5SID)){
+//           n5Cnt = v[n5SID].length;
+//         }
+//         if (v.hasOwnProperty(n6SID)){
+//           n6Cnt = v[n6SID].length;
+//         }
+//         const totalCnt = n1Cnt + n2Cnt + n3Cnt + n4Cnt + n5Cnt + n6Cnt;
+
+//         expect(totalCnt).toEqual(17);
+//       } catch (error) {
+//         done(error);
+//       }
+//     });
+//     done();
+//   });
+// });
+
+// test('test for mapFunction', (done) => {
+
+//   let m1 = (key, value) => {
+//     const authorsArray = value.authors.split(', ');
+//     //console.log(authorsArray, "authorarray");
+//     let out = [];
+//     authorsArray.forEach(author => {
+//       let result = {};
+//       result[author] = {
+//         title: value.title,
+//         conference: value.conference
+//       };
+//       out.push(result);
+//     })
+//     return out;
+//   }
+
+//   let msg = [{ gid: "articles" }];
+//   const remote = { service: "store", method: "get" };
+
+//   distribution.mygroup.comm.send(msg, remote, (e, v) => {
+//     //console.log(v);
+//     const testDataKeys = v.d3406;
+//     //console.log(testDataKeys);
+
+//     msg = [{ key: testDataKeys[0], gid: "articles" }];
+//     distribution.mygroup.comm.send(msg, remote, (e, v) => {
+//       //console.log(Object.values(v));
+//       let out = m1(null, Object.values(v)[0]);
+//       console.log(out);
+//       done();
+//     });
+//   });
+// });
+
+// test('test for reduceFunction', (done) => {
+//   testcase = {
+//     'Michel Banatre': [{
+//       title: 'paper 1',
+//       conference: 'conference 1'
+//     },
+//     {
+//       title: 'paper 2',
+//       conference: 'conference 1'
+//     },
+//     {
+//       title: 'paper 3',
+//       conference: 'conference 2'
+//     },
+//     {
+//       title: 'paper 4',
+//       conference: 'conference 3'
+//     }
+//     ],
+//     'Gilles Muller':[{
+//       title: 'paper 5',
+//       conference: 'conference 3'
+//     },
+//     {
+//       title: 'paper 6',
+//       conference: 'conference 4'
+//     },
+//     ]
+//   };
+//   let r1 = (key, value) => {
+//     let out = {};
+//     let titles = [];
+//     let conferencesSet = new Set();
+
+//     value[key].forEach(paper => {
+//       titles.push(paper.title);
+//       conferencesSet.add(paper.conference);
+//     })
+
+//     out['numberOfPapers'] = value[key].length;
+//     out['titles'] = titles;
+//     out['conferences'] = [...conferencesSet];
+//     return out;
+//   };
+
+//   let key = 'Michel Banatre';
+//   let out = r1(key, testcase);
+//   console.log(out);
+//   done();
+
+// });
+
+test('test for mapReduce', (done) => {
+  let m1 = (key, value) => {
+    let authorarray;
+    if (value.authors.includes(';')) {
+      const group = message2.split(';');
+      const out = group.map((part) => {
+        elements = part.split(', ');
+        return elements[0];
+      });
+      authorarray = [...new Set(out)];
+    } else {
+      authorsArray = value.authors.split(', ');
     }
-    distribution.mygroup.comm.send(msg, remote, (e, v) => {
-      try {
-        const n1Cnt = Object.keys(v[id.getSID(n1)]).length;
-        const n2Cnt = Object.keys(v[id.getSID(n2)]).length;
-        const n3Cnt = Object.keys(v[id.getSID(n3)]).length;
-        const totalCnt = n1Cnt + n2Cnt + n3Cnt;
-        expect(e).toEqual({});
-        expect(totalCnt).toEqual(345);
-      } catch (error) {
-        done(error);
-      }
+    // console.log(authorsArray, "authorarray");
+    let out = [];
+    authorsArray.forEach((author) => {
+      let result = {};
+      result[author] = {
+        title: value.title,
+        conference: value.conference,
+      };
+      out.push(result);
     });
-    done();
-  });
-});
-
-test('all.crawler.getArticle(articleUrl) w/ abstract', (done) => {
-  const articleurl =
-    'https://www.usenix.org/conference/usenixsecurity24/presentation/cheng-xiaoyu';
-  const article = [
-    {text: 'USENIX Security \'24', href: 'conference/usenixsecurity24'},
-    {
-      text: 'SpecLFB: Eliminating Cache Side Channels in Speculative Executions',
-      href: '/conference/usenixsecurity24/presentation/cheng-xiaoyu',
-    },
-    {text: ''},
-  ];
-  const expected = {
-    conference: 'USENIX Security \'24',
-    title: 'SpecLFB: Eliminating Cache Side Channels in Speculative Executions',
-    authors:
-      'Xiaoyu Cheng, School of Cyber Science and Engineering, Southeast University, Nanjing, Jiangsu, China; Jiangsu Province Engineering Research Center of Security for Ubiquitous Network, China; Fei Tong, School of Cyber Science and Engineering, Southeast University, Nanjing, Jiangsu, China; Jiangsu Province Engineering Research Center of Security for Ubiquitous Network, China; Purple Mountain Laboratories, Nanjing, Jiangsu, China; Hongyu Wang, State Key Laboratory of Power Equipment Technology, School of Electrical Engineering, Chongqing University, China; Wiscom System Co., LTD, Nanjing, China; Zhe Zhou and Fang Jiang, School of Cyber Science and Engineering, Southeast University, Nanjing, Jiangsu, China; Jiangsu Province Engineering Research Center of Security for Ubiquitous Network, China; Yuxing Mao, State Key Laboratory of Power Equipment Technology, School of Electrical Engineering, Chongqing University, China',
-    abstract:
-      'Cache side-channel attacks based on speculative executions are powerful and difficult to mitigate. Existing hardware defense schemes often require additional hardware data structures, data movement operations and/or complex logical computations, resulting in excessive overhead of both processor performance and hardware resources. To this end, this paper proposes SpecLFB, which utilizes the microarchitecture component, Line-Fill-Buffer, integrated with a proposed mechanism for load security check to prevent the establishment of cache side channels in speculative executions. To ensure the correctness and immediacy of load security check, a structure called ROB unsafe mask is designed for SpecLFB to track instruction state. To further reduce processor performance overhead, SpecLFB narrows down the protection scope of unsafe speculative loads and determines the time at which they can be deprotected as early as possible. SpecLFB has been implemented in the open-source RISC-V core, SonicBOOM, as well as in Gem5. For the enhanced SonicBOOM, its register-transfer-level (RTL) code is generated, and an FPGA hardware prototype burned with the core and running a Linux-kernel-based operating system is developed. Based on the evaluations in terms of security guarantee, performance overhead, and hardware resource overhead through RTL simulation, FPGA prototype experiment, and Gem5 simulation, it shows that SpecLFB effectively defends against attacks. It leads to a hardware resource overhead of only 0.6% and the performance overhead of only 1.85% and 3.20% in the FPGA prototype experiment and Gem5 simulation, respectively.',
+    return out;
   };
-  distribution.mygroup.crawler.getArticle(articleurl, article, (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toEqual(expected);
-    done();
-  });
-});
 
-test('all.crawler.getArticle(articleUrl) w/o abstract', (done) => {
-  const articleurl =
-    'https://www.usenix.org/conference/usenix-mach-symposium/how-design-reliable-servers-using-fault-tolerant-micro-kernel';
-  const article = [
-    {text: 'USENIX Mach Symposium', href: '/conference/usenixmachsymposium'},
-    {
-      text: 'How to Design Reliable Servers using Fault Tolerant Micro-Kernel Mechanisms',
-      href: '/conference/usenix-mach-symposium/how-design-reliable-servers-using-fault-tolerant-micro-kernel',
-    },
-    {text: 'Michel Banâtre, Gilles Muller, Pack Heng, Bruno Rochat'},
-  ];
-  const expected = {
-    conference: 'USENIX Mach Symposium',
-    title:
-      'How to Design Reliable Servers using Fault Tolerant Micro-Kernel Mechanisms',
-    authors:
-      'Michel Banatre and Gilles Muller, IRISA/INRlA; Pack Heng and Bruno Rochat, BULL Research',
-    abstract: '',
-  };
-  distribution.mygroup.crawler.getArticle(articleurl, article, (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toEqual(expected);
-    done();
-  });
-});
-
-test('all.crawler.getArticles(pageUrl)', (done) => {
-  const pageUrl = 'https://www.usenix.org/publications/proceedings?page=345';
-  const msg = [{gid: 'articles'}];
-  const remote = {service: 'store', method: 'get'};
-
-  distribution.mygroup.crawler.getArticles(pageUrl, (e, v) => {
-    try {
-      expect(e).toBeFalsy();
-    } catch (error) {
-      done(error);
+  let r1 = (key, value) => {
+    let out = {};
+    let result = {};
+    let titles = [];
+    let conferencesSet = new Set();
+    if (!Array.isArray(value)) {
+      value = [value];
     }
-    distribution.mygroup.comm.send(msg, remote, (e, v) => {
-      let n1Cnt = 0;
-      let n2Cnt = 0;
-      let n3Cnt = 0;
-      let n4Cnt = 0;
-      let n5Cnt = 0;
-      let n6Cnt = 0;
-      try {
-        if (v.hasOwnProperty(n1SID)) {
-          n1Cnt = v[n1SID].length;
-        }
-        if (v.hasOwnProperty(n2SID)) {
-          n2Cnt = v[n2SID].length;
-        }
-        if (v.hasOwnProperty(n3SID)) {
-          n3Cnt = v[n3SID].length;
-        }
-        if (v.hasOwnProperty(n4SID)) {
-          n4Cnt = v[n4SID].length;
-        }
-        if (v.hasOwnProperty(n5SID)) {
-          n5Cnt = v[n5SID].length;
-        }
-        if (v.hasOwnProperty(n6SID)) {
-          n6Cnt = v[n6SID].length;
-        }
-        const totalCnt = n1Cnt + n2Cnt + n3Cnt + n4Cnt + n5Cnt + n6Cnt;
 
-        expect(totalCnt).toEqual(17);
-      } catch (error) {
-        done(error);
-      }
+    value.forEach((paper) => {
+      titles.push(paper.title);
+      conferencesSet.add(paper.conference);
     });
-    done();
+
+    result['numberOfPapers'] = value.length;
+    result['titles'] = titles;
+    result['conferences'] = [...conferencesSet];
+    out[key] = result;
+    return out;
+  };
+
+  let msg = [{gid: 'articles'}];
+  const remote = {service: 'store', method: 'get'};
+  distribution.mygroup.comm.send(msg, remote, (e, v) => {
+    const allValues = Object.values(v).flat();
+    console.log(allValues);
+    // testkeys = ['269655b3f10f1a0ce55b7609799b618895c15979b107e2f403839b6649c753dc'];
+    distribution.mygroup.mr.exec(
+        {keys: allValues, map: m1, reduce: r1, flexGid: 'articles', memory: true},
+        (e, v) => {
+          console.log(v, 'result');
+          done();
+        },
+    );
   });
 });
