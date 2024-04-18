@@ -6,7 +6,7 @@ const util = require('../../distribution/util/util');
 
 const query = {};
 
-query.queryNumberOfPapers = (keyword, gid, callback) => {
+query.queryNumberOfPapers = (operation, keyword, gid, callback) => {
   callback = callback || function (e, v) {};
 
   const baseFolderPath = path.join(
@@ -32,10 +32,15 @@ query.queryNumberOfPapers = (keyword, gid, callback) => {
         const filePath = path.join(storeFolderPath, targetKey);
         const content = fs.readFileSync(filePath, 'utf8');
         const value = util.deserialize(content);
-        results.push({
-          author: targetKey,
-          numberOfPapers: value[0][targetKey]['numberOfPapers'],
-        });
+        let tmp = {};
+        tmp['author'] = targetKey;
+        tmp[operation] = value[0][targetKey][operation];
+        results.push(tmp);
+        // results.push({
+        //   author: targetKey,
+        //   numberOfPapers: value[0][targetKey]['numberOfPapers'],
+        //   operation: value[0][targetKey][operation],
+        // });
       }
       callback(null, results);
       return;

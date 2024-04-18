@@ -107,9 +107,15 @@ test('test mr', async () => {
   const {config1} = require('../distribution/config/config');
   config1.keys = articleKeys;
 
+  const operation = Object.freeze({ 
+    1: 'numberOfPapers', 
+    2: 'titles', 
+    3: 'conferences'
+  }); 
+
   await util.promisify(distribution.mygroup.mr.exec)(config1);
   const res = await util.promisify(
     distribution.mygroup.query.queryNumberOfPapers,
-  )('University', config1.out);
-  console.log(res);
+  )(operation[3], 'University', config1.out);
+  console.log(res, "output");
 });

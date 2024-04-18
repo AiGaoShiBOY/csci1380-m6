@@ -15,9 +15,9 @@ const query = function (config) {
      * @param {*} gid The output folder specified by out
      * @param {*} callback
      */
-    queryNumberOfPapers: function (keyword, gid, callback) {
+    queryNumberOfPapers: function (operation, keyword, gid, callback) {
       callback = callback || function (e, v) {};
-      const message = [keyword, gid];
+      const message = [operation, keyword, gid];
       const remote = {service: 'query', method: 'queryNumberOfPapers'};
       distribution[context.gid].comm.send(message, remote, (e, v) => {
         const values = Object.values(v);
