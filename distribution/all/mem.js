@@ -1,6 +1,6 @@
 const {id} = require('../util/util');
 
-const mem = function(config) {
+const mem = function (config) {
   let context = {};
   context.gid = config.gid || 'all';
   context.hash = config.hash || id.naiveHash;
@@ -9,31 +9,54 @@ const mem = function(config) {
   //   throw new Error('Distribution not found');
   // }
   return {
-    put: function(value, key, callback) {
-      callback = callback || function() {};
+    /**
+     * Usage: the same with store.put
+     * @param {*} value
+     * @param {*} keyInput
+     * @param {*} callback
+     */
+    put: function (value, keyInput, callback) {
+      callback = callback || function () {};
       distribution.local.groups.get(context.gid, (e, v) => {
         if (e) {
           callback(e, null);
           return;
         }
+
+        let realKey;
+        let gidForFolder;
+        if (typeof keyInput === 'string') {
+          realKey = keyInput;
+          gidForFolder = context.gid;
+        } else if (typeof keyInput === 'object' && keyInput !== null) {
+          realKey = keyInput.key ? keyInput.key : id.getID(value);
+          if (keyInput.gid) {
+            gidForFolder = keyInput.gid;
+          } else {
+            callback(
+              new Error('You cannot input a object for store.put without gid'),
+              null,
+            );
+          }
+        } else {
+          realKey = id.getID(value);
+          gidForFolder = context.gid;
+        }
+
         // get all the nodes
         const nodesArray = Object.values(v);
         const nids = nodesArray.map((node) => id.getNID(node));
 
         // get the hash of the value
-        // if the key is null, do multiple hash;
-        if (!key) {
-          key = id.getID(value);
-        }
-        const kid = id.getID(key);
+        const kid = id.getID(realKey);
         const expectedHash = context.hash(kid, nids.slice());
 
         const targetIdx = nids.indexOf(expectedHash);
         const targetNode = nodesArray[targetIdx];
 
         const keyWithGid = {
-          key: key,
-          gid: context.gid,
+          key: realKey,
+          gid: gidForFolder,
         };
 
         const message = [value, keyWithGid];
@@ -52,36 +75,57 @@ const mem = function(config) {
         });
       });
     },
-    get: function(key, callback) {
-      callback = callback || function() {};
+
+    /**
+     * Usage: the same with store.get
+     * @param {*} key
+     * @param {*} callback
+     */
+    get: function (keyInput, callback) {
+      callback = callback || function () {};
       distribution.local.groups.get(context.gid, (e, v) => {
         if (e) {
           callback(e, null);
           return;
         }
 
-        if (key) {
+        let realKey;
+        let gidForFolder;
+        if (typeof keyInput === 'string') {
+          realKey = keyInput;
+          gidForFolder = context.gid;
+        } else if (typeof keyInput === 'object' && keyInput !== null) {
+          realKey = keyInput.key ? keyInput.key : null;
+          if (keyInput.gid) {
+            gidForFolder = keyInput.gid;
+          } else {
+            callback(
+              new Error('You cannot input a object for store.put without gid'),
+              null,
+            );
+          }
+        } else {
+          realKey = null;
+          gidForFolder = context.gid;
+        }
+
+        if (realKey) {
           // get all the nodes
           const nodesArray = Object.values(v);
           const nids = nodesArray.map((node) => id.getNID(node));
 
           // get the hash of the value
-          const kid = id.getID(key);
+          const kid = id.getID(realKey);
           const expectedHash = context.hash(kid, nids.slice());
 
           const targetIdx = nids.indexOf(expectedHash);
           const targetNode = nodesArray[targetIdx];
 
-          let keyWithGid;
+          const keyWithGid = {
+            key: realKey,
+            gid: gidForFolder,
+          };
 
-          if (typeof key === 'string') {
-            keyWithGid = {
-              key: key,
-              gid: context.gid,
-            };
-          } else {
-            keyWithGid = key;
-          }
           const message = [keyWithGid];
           const remoteWithNode = {
             node: {ip: targetNode.ip, port: targetNode.port},
@@ -99,8 +143,8 @@ const mem = function(config) {
           });
         } else {
           const keyWithGid = {
-            key: key,
-            gid: context.gid,
+            key: null,
+            gid: gidForFolder,
           };
           const message = [keyWithGid];
           const remote = {service: 'mem', method: 'get'};
@@ -116,34 +160,60 @@ const mem = function(config) {
         }
       });
     },
-    del: function(key, callback) {
-      callback = callback || function() {};
+
+    /**
+     * Usage: the same with store.del
+     * @param {*} key
+     * @param {*} callback
+     */
+    del: function (keyInput, callback) {
+      callback = callback || function () {};
       distribution.local.groups.get(context.gid, (e, v) => {
         if (e) {
           callback(e, null);
           return;
         }
+
+        let realKey;
+        let gidForFolder;
+        if (typeof keyInput === 'string') {
+          realKey = keyInput;
+          gidForFolder = context.gid;
+        } else if (typeof keyInput === 'object' && keyInput !== null) {
+          realKey = keyInput.key ? keyInput.key : null;
+          if (keyInput.gid) {
+            gidForFolder = keyInput.gid;
+          } else {
+            callback(
+              new Error('You cannot input a object for store.del without gid'),
+              null,
+            );
+          }
+        } else {
+          realKey = null;
+          gidForFolder = context.gid;
+        }
+
+        if (!realKey) {
+          callback(new Error('You must specify a key for store.del'), null);
+          return;
+        }
+
         // get all the nodes
         const nodesArray = Object.values(v);
         const nids = nodesArray.map((node) => id.getNID(node));
 
         // get the hash of the value
-        const kid = id.getID(key);
+        const kid = id.getID(realKey);
         const expectedHash = context.hash(kid, nids.slice());
 
         const targetIdx = nids.indexOf(expectedHash);
         const targetNode = nodesArray[targetIdx];
 
-        let keyWithGid;
-
-        if (typeof key === 'string') {
-          keyWithGid = {
-            key: key,
-            gid: context.gid,
-          };
-        } else {
-          keyWithGid = key;
-        }
+        const keyWithGid = {
+          key: realKey,
+          gid: gidForFolder,
+        };
 
         const message = [keyWithGid];
         const remoteWithNode = {
@@ -163,38 +233,57 @@ const mem = function(config) {
         });
       });
     },
-    append: function(value, key, callback) {
-      callback = callback || function() {};
+
+    /**
+     * Usage: the same with store.append
+     * @param {*} value
+     * @param {*} key
+     * @param {*} callback
+     */
+    append: function (value, keyInput, callback) {
+      callback = callback || function () {};
       distribution.local.groups.get(context.gid, (e, v) => {
         if (e) {
           callback(e, null);
           return;
         }
+
+        let realKey;
+        let gidForFolder;
+        if (typeof keyInput === 'string') {
+          realKey = keyInput;
+          gidForFolder = context.gid;
+        } else if (typeof keyInput === 'object' && keyInput !== null) {
+          realKey = keyInput.key ? keyInput.key : id.getID(value);
+          if (keyInput.gid) {
+            gidForFolder = keyInput.gid;
+          } else {
+            callback(
+              new Error('You cannot input a object for store.put without gid'),
+              null,
+            );
+          }
+        } else {
+          realKey = id.getID(value);
+          gidForFolder = context.gid;
+        }
+
         // get all the nodes
         const nodesArray = Object.values(v);
         const nids = nodesArray.map((node) => id.getNID(node));
 
         // get the hash of the value
         // if the key is null, do multiple hash;
-        if (!key) {
-          key = id.getID(value);
-        }
-        const kid = id.getID(key);
+        const kid = id.getID(realKey);
         const expectedHash = context.hash(kid, nids.slice());
 
         const targetIdx = nids.indexOf(expectedHash);
         const targetNode = nodesArray[targetIdx];
 
-        let keyWithGid;
-
-        if (typeof key === 'string') {
-          keyWithGid = {
-            key: key,
-            gid: context.gid,
-          };
-        } else {
-          keyWithGid = key;
-        }
+        const keyWithGid = {
+          key: realKey,
+          gid: gidForFolder,
+        };
 
         const message = [value, keyWithGid];
         const remoteWithNode = {
@@ -212,8 +301,8 @@ const mem = function(config) {
         });
       });
     },
-    reconf: function(originalGroup, callback) {
-      callback = callback || function() {};
+    reconf: function (originalGroup, callback) {
+      callback = callback || function () {};
       distribution.local.groups.get(context.gid, (e, v) => {
         if (e) {
           callback(e, null);
