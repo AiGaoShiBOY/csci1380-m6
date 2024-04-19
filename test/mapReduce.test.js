@@ -110,6 +110,6 @@ test('test mr', async () => {
   await util.promisify(distribution.mygroup.mr.exec)(config1);
   const res = await util.promisify(
     distribution.mygroup.query.queryNumberOfPapers,
-  )('University', config1.out);
+  )('soft', config1.out);
   console.log(res);
 });
