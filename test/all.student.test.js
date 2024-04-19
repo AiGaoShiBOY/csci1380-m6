@@ -26,10 +26,10 @@ const n2 = {ip: '127.0.0.1', port: 7111};
 const n3 = {ip: '127.0.0.1', port: 7112};
 
 beforeAll((done) => {
+
+  // clean up the store directory
   const directoryPath = path.join(__dirname, '../store');
-
   fs.rmSync(directoryPath, {recursive: true, force: true});
-
   fs.mkdirSync(directoryPath);
 
 

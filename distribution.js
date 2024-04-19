@@ -30,12 +30,12 @@ if (args.port) {
 if (args.config) {
   let nodeConfig = util.deserialize(args.config);
   global.nodeConfig.ip = nodeConfig.ip ? nodeConfig.ip : global.nodeConfig.ip;
-  global.nodeConfig.port = nodeConfig.port ?
-    nodeConfig.port :
-    global.nodeConfig.port;
-  global.nodeConfig.onStart = nodeConfig.onStart ?
-    nodeConfig.onStart :
-    global.nodeConfig.onStart;
+  global.nodeConfig.port = nodeConfig.port
+    ? nodeConfig.port
+    : global.nodeConfig.port;
+  global.nodeConfig.onStart = nodeConfig.onStart
+    ? nodeConfig.onStart
+    : global.nodeConfig.onStart;
 }
 
 const distribution = {
@@ -55,6 +55,9 @@ distribution['all'].routes = require('./distribution/all/routes')({gid: 'all'});
 distribution['all'].mem = require('./distribution/all/mem')({gid: 'all'});
 distribution['all'].store = require('./distribution/all/store')({gid: 'all'});
 distribution['all'].crawler = require('./distribution/all/crawler')({
+  gid: 'all',
+});
+distribution['all'].query = require('./distribution/all/query')({
   gid: 'all',
 });
 

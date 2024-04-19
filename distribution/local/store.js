@@ -16,8 +16,8 @@ const {id, serialize, deserialize} = require('../util/util');
 
 const store = {};
 
-store.put = function(value, key, callback) {
-  callback = callback || function() {};
+store.put = function (value, key, callback) {
+  callback = callback || function () {};
   let realKey;
   let gid;
   if (typeof key === 'string' || !key) {
@@ -28,8 +28,11 @@ store.put = function(value, key, callback) {
     gid = key.gid;
   }
 
-  const baseFolderPath = path
-      .join(__dirname, '../../store', 's-' + id.getSID(global.nodeConfig));
+  const baseFolderPath = path.join(
+    __dirname,
+    '../../store',
+    's-' + id.getSID(global.nodeConfig),
+  );
 
   if (!fs.existsSync(baseFolderPath)) {
     fs.mkdirSync(baseFolderPath);
@@ -51,8 +54,8 @@ store.put = function(value, key, callback) {
   });
 };
 
-store.get = function(key, callback) {
-  callback = callback || function() {};
+store.get = function (key, callback) {
+  callback = callback || function () {};
   let realKey;
   let gid;
   if (typeof key === 'string' || !key) {
@@ -63,8 +66,11 @@ store.get = function(key, callback) {
     gid = key.gid;
   }
 
-  const baseFolderPath = path
-      .join(__dirname, '../../store', 's-' + id.getSID(global.nodeConfig));
+  const baseFolderPath = path.join(
+    __dirname,
+    '../../store',
+    's-' + id.getSID(global.nodeConfig),
+  );
 
   if (!fs.existsSync(baseFolderPath)) {
     fs.mkdirSync(baseFolderPath);
@@ -102,11 +108,8 @@ store.get = function(key, callback) {
   });
 };
 
-store.del = function(key, callback) {
-  if (key === 'it') {
-    console.log('store.js 105', key);
-  }
-  callback = callback || function() {};
+store.del = function (key, callback) {
+  callback = callback || function () {};
   let realKey;
   let gid;
   if (typeof key === 'string' || !key) {
@@ -117,8 +120,11 @@ store.del = function(key, callback) {
     gid = key.gid;
   }
 
-  const baseFolderPath = path
-      .join(__dirname, '../../store', 's-' + id.getSID(global.nodeConfig));
+  const baseFolderPath = path.join(
+    __dirname,
+    '../../store',
+    's-' + id.getSID(global.nodeConfig),
+  );
 
   if (!fs.existsSync(baseFolderPath)) {
     fs.mkdirSync(baseFolderPath);
@@ -147,8 +153,8 @@ store.del = function(key, callback) {
 };
 
 // append the key in the back of store method
-store.append = function(value, key, callback) {
-  callback = callback || function() {};
+store.append = function (value, key, callback) {
+  callback = callback || function () {};
   let realKey;
   let gid;
   if (typeof key === 'string' || !key) {
@@ -159,8 +165,11 @@ store.append = function(value, key, callback) {
     gid = key.gid;
   }
 
-  const baseFolderPath = path
-      .join(__dirname, '../../store', 's-' + id.getSID(global.nodeConfig));
+  const baseFolderPath = path.join(
+    __dirname,
+    '../../store',
+    's-' + id.getSID(global.nodeConfig),
+  );
 
   if (!fs.existsSync(baseFolderPath)) {
     fs.mkdirSync(baseFolderPath);
@@ -172,7 +181,6 @@ store.append = function(value, key, callback) {
   }
 
   const filePath = path.join(storeFolderPath, realKey);
-
 
   if (fs.existsSync(filePath)) {
     const data = fs.readFileSync(filePath, {encoding: 'utf8'});
@@ -192,6 +200,5 @@ store.append = function(value, key, callback) {
   fs.writeFileSync(filePath, serialize(arrayData), {encoding: 'utf8'});
   callback(null, value);
 };
-
 
 module.exports = store;

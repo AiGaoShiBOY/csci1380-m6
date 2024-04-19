@@ -99,7 +99,12 @@ const start = function (onStart) {
         console.log(`[SERVER] Args: ${JSON.stringify(args)}
         ServiceCallback: ${serviceCallback}`);
 
-        global.distribution.engine.crawler[method](...args, serviceCallback);
+        try {
+          console.log('check point 1');
+          global.distribution.engine.crawler[method](...args, serviceCallback);
+        } catch (e) {
+          serviceCallback(e, null);
+        }
       } else {
         local.routes.get(service, (error, service) => {
           if (error) {
