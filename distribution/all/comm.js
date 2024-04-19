@@ -28,12 +28,6 @@ let comm = (config) => {
                 values[sid] = v;
               }
               if (counter === 0) {
-                console.log(
-                  `============= all.comm.send ==========\n 
-                  `,
-                  errors,
-                  values,
-                );
                 callback(errors, values);
               }
             });

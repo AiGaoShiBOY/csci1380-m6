@@ -1,5 +1,8 @@
 const mapByAuthor = (key, value) => {
   let authorarray;
+  if (!value.hasOwnProperty('authors')) {
+    return [];
+  }
   if (value.authors.includes(';')) {
     const group = value.authors.split(';');
     const out = group.map((part) => {
@@ -8,17 +11,23 @@ const mapByAuthor = (key, value) => {
     });
     authorarray = [...new Set(out)];
   } else {
-    authorsArray = value.authors.split(', ');
+    authorarray = value.authors.split(', ');
+  }
+  authorarray = authorarray.filter((author) => author !== '');
+  if (!authorarray || authorarray.length === 0) {
+    return [];
   }
   let out = [];
-  authorsArray.forEach((author) => {
-    let result = {};
-    result[author] = {
-      title: value.title,
-      conference: value.conference,
-    };
-    out.push(result);
-  });
+  if (Array.isArray(authorarray)) {
+    authorarray.forEach((author) => {
+      let result = {};
+      result[author] = {
+        title: value.title,
+        conference: value.conference,
+      };
+      out.push(result);
+    });
+  }
   return out;
 };
 

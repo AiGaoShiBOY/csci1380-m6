@@ -97,7 +97,7 @@ const mapWrapper = function (keys, gid, mapper, memory, callback) {
         // store the data
         global.distribution.local['store'].put(
           mappedData,
-          {key: key, gid: gid},
+          {key: key, gid: 'mappedData'},
           (e, v) => {
             cnt--;
             if (cnt === 0) {
@@ -129,22 +129,53 @@ const shuffleWrapper = function (
   let keySet = [];
   keys.forEach((key) => {
     // get the key from local storage
-    global.distribution.local['store'].get({key: key, gid: gid}, (e, v) => {
-      if (v) {
-        let value;
-        if (compactor) {
-          value = compactor(v);
-        } else {
-          value = v;
-        }
-        if (Array.isArray(value)) {
-          let cnt2 = value.length;
-          for (const obj of value) {
-            let [newKey, newVal] = Object.entries(obj)[0];
-            // if the key contains "/", remove it to avoid conflicts with paths
-            if (newKey.includes('/')) {
-              newKey = newKey.replace(/\//g, '');
+    global.distribution.local['store'].get(
+      {key: key, gid: 'mappedData'},
+      (e, v) => {
+        if (v) {
+          let value;
+          if (compactor) {
+            value = compactor(v);
+          } else {
+            value = v;
+          }
+          if (Array.isArray(value)) {
+            if (!value || value.length === 0) {
+              cnt--;
+              if (cnt === 0) {
+                callback(null, keySet);
+                return;
+              }
+              return;
             }
+            let cnt2 = value.length;
+            for (const obj of value) {
+              let [newKey, newVal] = Object.entries(obj)[0];
+              // if the key contains "/", remove it to avoid conflicts with paths
+              if (newKey.includes('/')) {
+                newKey = newKey.replace(/\//g, '');
+              }
+              keySet.push(newKey);
+              const newKeyWithGid = {
+                key: newKey,
+                gid: 'shuffleResult',
+              };
+              global.distribution[contextgid][memory].append(
+                newVal,
+                newKeyWithGid,
+                (e, v) => {
+                  cnt2--;
+                  if (cnt2 === 0) {
+                    cnt--;
+                    if (cnt === 0) {
+                      callback(null, keySet);
+                    }
+                  }
+                },
+              );
+            }
+          } else {
+            let [newKey, newVal] = Object.entries(value)[0];
             keySet.push(newKey);
             const newKeyWithGid = {
               key: newKey,
@@ -154,42 +185,22 @@ const shuffleWrapper = function (
               newVal,
               newKeyWithGid,
               (e, v) => {
-                cnt2--;
-                if (cnt2 === 0) {
-                  cnt--;
-                  if (cnt === 0) {
-                    callback(null, keySet);
-                  }
+                cnt--;
+                if (cnt === 0) {
+                  callback(null, keySet);
                 }
               },
             );
           }
         } else {
-          let [newKey, newVal] = Object.entries(value)[0];
-          keySet.push(newKey);
-          const newKeyWithGid = {
-            key: newKey,
-            gid: 'shuffleResult',
-          };
-          global.distribution[contextgid][memory].append(
-            newVal,
-            newKeyWithGid,
-            (e, v) => {
-              cnt--;
-              if (cnt === 0) {
-                callback(null, keySet);
-              }
-            },
-          );
+          cnt--;
+          if (cnt === 0) {
+            callback(null, keySet);
+            return;
+          }
         }
-      } else {
-        cnt--;
-        if (cnt === 0) {
-          callback(null, keySet);
-          return;
-        }
-      }
-    });
+      },
+    );
   });
 };
 

@@ -1,5 +1,6 @@
 const distribution = require('../distribution');
 const util = require('../distribution/util/util');
+const {config1} = require('../distribution/config/config');
 
 /**
  * engine configuration
@@ -32,10 +33,32 @@ for (let i = 0; i < nodeNum; ++i) {
   engineNodes.push(node);
 }
 
+/**
+ * define the mapReduce config
+ */
+const mapReduceConfig = config1;
+
+/**
+ * whether clearing the original data
+ */
+const clearOriginalData = true;
+
+/**
+ * query operations
+ */
+const queryOps = Object.freeze({
+  1: 'numberOfPapers',
+  2: 'titles',
+  3: 'conferences',
+});
+
 module.exports = {
   orchestrator,
   nodeNum,
   engineConfig,
   engineGroup,
   engineNodes,
+  mapReduceConfig,
+  clearOriginalData,
+  queryOps,
 };

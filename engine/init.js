@@ -7,11 +7,13 @@ const fs = require('fs');
 const path = require('path');
 const distribution = require('../distribution');
 
-async function initialize() {
+async function initialize(clearOriginalData = true) {
   // first clean up the storage;
-  const directoryPath = path.join(__dirname, '../store');
-  fs.rmSync(directoryPath, {recursive: true, force: true});
-  fs.mkdirSync(directoryPath);
+  if (clearOriginalData) {
+    const directoryPath = path.join(__dirname, '../store');
+    fs.rmSync(directoryPath, {recursive: true, force: true});
+    fs.mkdirSync(directoryPath);
+  }
 
   // second spawn all the nodes
   const spawnPromise = util.promisify(distribution.local.status.spawn);
