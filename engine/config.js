@@ -41,7 +41,7 @@ const mapReduceConfig = config1;
 /**
  * whether clearing the original data
  */
-const clearOriginalData = true;
+const clearOriginalData = false;
 
 /**
  * query operations

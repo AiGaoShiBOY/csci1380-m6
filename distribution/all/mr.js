@@ -54,12 +54,14 @@ const mr = function (config) {
           method: 'map',
         };
         distribution[context.gid].comm.send(message, remote, (e, v) => {
+          //console.log(v, "result after map");
           const message = [keys, context.gid, dataFolderId, memory, compactor];
           const remote = {
             service: mrId,
             method: 'shuffle',
           };
           distribution[context.gid].comm.send(message, remote, (e, v) => {
+            //console.log(v, "result after shuffle");
             const values = Object.values(v);
             const flattenedValues = values.flat();
             const keySet = new Set(flattenedValues);
@@ -70,6 +72,7 @@ const mr = function (config) {
               method: 'reduce',
             };
             distribution[context.gid].comm.send(message, remote, (e, v) => {
+              //console.log(v, "result after reduce");
               const values = Object.values(v);
               const nonEmptyResults = values.filter(
                 (arr) => arr && arr.length > 0,
@@ -94,6 +97,7 @@ const mapWrapper = function (keys, gid, mapper, memory, callback) {
       if (v) {
         // apply the mapper on the data
         const mappedData = mapper(key, v);
+        //console.log(mappedData, "data after mapper");
         // store the data
         global.distribution.local['store'].put(
           mappedData,
@@ -214,6 +218,7 @@ const reduceWrapper = function (keys, gid, reducer, out, memory, callback) {
         // get the value from storage
         if (v) {
           const reduceRes = reducer(key, v);
+          console.log(reduceRes);
           // store the res to out group
           if (out) {
             global.distribution[gid]['store'].append(

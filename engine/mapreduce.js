@@ -13,7 +13,7 @@ async function doMapReduce() {
   const res = await util.promisify(distribution[engineConfig.gid].mr.exec)(
     mapReduceConfig,
   );
-  console.log(res);
+  //console.log(res);
 }
 
 module.exports = doMapReduce;

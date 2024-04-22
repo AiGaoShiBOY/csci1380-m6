@@ -68,6 +68,7 @@
 //   }
 // }
 
+
 const mapByAuthor = (key, value) => {
   if (!value.hasOwnProperty('authors')) {
     return [];
@@ -107,7 +108,8 @@ const mapByAuthor = (key, value) => {
     }
   }
 
-  authors = processedAuthors;
+  //filter out empty strings
+  authors = processedAuthors.filter((author) => {return !(/^\s*$/.test(author));});
 
 
   if (!authors || authors.length === 0) {
