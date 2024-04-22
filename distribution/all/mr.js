@@ -218,7 +218,7 @@ const reduceWrapper = function (keys, gid, reducer, out, memory, callback) {
         // get the value from storage
         if (v) {
           const reduceRes = reducer(key, v);
-          console.log(reduceRes);
+          //console.log(reduceRes);
           // store the res to out group
           if (out) {
             global.distribution[gid]['store'].append(

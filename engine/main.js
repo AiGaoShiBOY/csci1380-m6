@@ -1,10 +1,11 @@
+const nodeNum = requie('./config').nodeNum;
 const distribution = require('../distribution');
 const id = distribution.util.id;
 const groupsTemplate = require('../distribution/all/groups');
 
 // meta info
 global.nodeConfig = {ip: '127.0.0.1', port: 7000}; // local orchestrator
-const nodeNum = 5; // number of nodes in the distributed search engine
+//const nodeNum = 3; // number of nodes in the distributed search engine
 let localServer = null; // neede to gracefully shutdown all nodes
 let engineGroup = {};
 let engineNodes = [];

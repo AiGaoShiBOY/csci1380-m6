@@ -14,7 +14,7 @@ const orchestrator = {ip: '127.0.0.1', port: 7000};
 /**
  * define engine's node number
  */
-const nodeNum = 5;
+const nodeNum = 3;
 
 /**
  * define the group name for the engine
@@ -41,7 +41,7 @@ const mapReduceConfig = config1;
 /**
  * whether clearing the original data
  */
-const clearOriginalData = false;
+const clearOriginalData = true;
 
 /**
  * query operations

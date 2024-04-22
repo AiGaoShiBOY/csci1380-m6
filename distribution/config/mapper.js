@@ -101,6 +101,7 @@ const mapByAuthor = (key, value) => {
       // handle authors separated by 'and'
       if (author.includes(' and ')) {
         let splitAuthors = author.split(' and ');
+        splitAuthors = splitAuthors.map(str => str.replace(/^and\s+/i));
         processedAuthors.push(...splitAuthors);
       } else {
         processedAuthors.push(author);
@@ -110,7 +111,7 @@ const mapByAuthor = (key, value) => {
 
   //filter out empty strings
   authors = processedAuthors.filter((author) => {return !(/^\s*$/.test(author));});
-
+  authors = authors.map(str => str.trim());
 
   if (!authors || authors.length === 0) {
     return [];
