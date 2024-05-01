@@ -21,17 +21,20 @@ async function query(ops, keyword) {
 
 async function runQuery() {
   return new Promise((resolve) => {
-    rl.question('Please enter the operation codes and search term (enter q to exit): \n operation code : \n 1 for numbers of papar \n 2 for paper title \n 3 for conference attandence \n', async (input) => {
-      if (input.toLowerCase() === 'q') {
-        rl.close();
-        resolve();
-        return;
-      }
+    rl.question(
+      'Please enter the operation codes and search term (enter q to exit): \n operation code : \n 1 for numbers of paper \n 2 for paper title \n 3 for conference attandence \n',
+      async (input) => {
+        if (input.toLowerCase() === 'q') {
+          rl.close();
+          resolve();
+          return;
+        }
 
-      const [ops, keyword] = input.split(' ');
-      await query(ops, keyword);
-      resolve(runQuery());
-    });
+        const [ops, keyword] = input.split(' ');
+        await query(ops, keyword);
+        resolve(runQuery());
+      },
+    );
   });
 }
 

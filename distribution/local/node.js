@@ -42,9 +42,14 @@ const start = function (onStart) {
       The url will have the form: http://node_ip:node_port/service/method
     */
 
-    // Write some code...
-
-    const pathname = url.parse(req.url).pathname;
+    /*
+      `true` makes it automatically parse the query string as well
+      For example, for the url localhost:8080/query/queryNumberOfPapers?ops=titles&keyword=hits
+      pathname = localhost:8080/query/queryNumberOfPapers 
+      query = ops=titles&keyword=hits
+    */
+    const parsedUrl = url.parse(req.url, true);
+    const {pathname, query} = parsedUrl;
     const [, service, method] = pathname.split('/');
 
     // console.log(`[SERVER] (${global.nodeConfig.ip}:${global.nodeConfig.port})
@@ -105,6 +110,32 @@ const start = function (onStart) {
         } catch (e) {
           serviceCallback(e, null);
         }
+      } else if (
+        service === 'query' &&
+        global.nodeConfig.ip === req.socket.localAddress &&
+        req.socket.localPort === 8080
+      ) {
+        // only the coordinate node can take the query request through external http requests
+        const keyword = query.keyword;
+        const opsMap = {
+          1: 'numberOfPapers',
+          2: 'titles',
+          3: 'conferences',
+        };
+        console.log(
+          'Args for query http request: ',
+          opsMap[query.ops],
+          keyword,
+        );
+        distribution['engine'].query.queryNumberOfPapers(
+          opsMap[query.ops],
+          keyword,
+          'reduceResult',
+          (e, v) => {
+            // use the regular stringfy function instead of serialize for external clients
+            res.end(JSON.stringify(v));
+          },
+        );
       } else {
         local.routes.get(service, (error, service) => {
           if (error) {
