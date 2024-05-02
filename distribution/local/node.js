@@ -110,11 +110,7 @@ const start = function (onStart) {
         } catch (e) {
           serviceCallback(e, null);
         }
-      } else if (
-        service === 'query' &&
-        global.nodeConfig.ip === req.socket.localAddress &&
-        req.socket.localPort === 8080
-      ) {
+      } else if (service === 'query' && req.socket.localPort === 8080) {
         // only the coordinate node can take the query request through external http requests
         const keyword = query.keyword;
         const opsMap = {
