@@ -11,15 +11,30 @@ import {put} from './httpUtils/requestUtils';
 function App() {
   const [searchValue, setSearchValue] = React.useState('');
   const [selectedValue, setSelectedValue] = React.useState(1);
+  const [results, setResults] = React.useState([]);
 
   const handleSearchUser = async () => {
     const param = {
       ops: selectedValue,
-      keyWord: searchValue,
+      keyword: searchValue,
     };
     const resp = await put(param);
     console.log(resp);
+    setResults(resp);
   };
+
+  function renderResultItem(item) {
+    switch (selectedValue) {
+      case 1:
+        return `Author: ${item.author}, Number of Papers: ${item.numberOfPapers}`;
+      case 2:
+        return `Author: ${item.author}, Titles: ${item.titles}`;
+      case 3:
+        return `Author: ${item.author}, Conferences: ${item.conferences}`;
+      default:
+        return 'Impossible. selectedValue is neither 1, 2 nor 3';
+    }
+  }
 
   return (
     <div>
@@ -53,6 +68,7 @@ function App() {
               className="checkbox"
               onChange={() => {
                 setSelectedValue(1);
+                setResults([]); // clear results when option changes
               }}
             >
               Search number of papers
@@ -62,6 +78,7 @@ function App() {
               className="checkbox"
               onChange={() => {
                 setSelectedValue(2);
+                setResults([]); // clear results when option changes
               }}
             >
               List titles of papers
@@ -71,10 +88,18 @@ function App() {
               className="checkbox"
               onChange={() => {
                 setSelectedValue(3);
+                setResults([]); // clear results when option changes
               }}
             >
               List attended conferences
             </Checkbox>
+          </div>
+          <div className="result-container">
+            {results.map((item, index) => (
+              <div key={index} className="result-row">
+                {renderResultItem(item)}
+              </div>
+            ))}
           </div>
         </Container>
       </Container>
