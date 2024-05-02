@@ -1,0 +1,94 @@
+Date : 2024-04-30 23:01:01
+Directory : /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6
+Total : 57 files,  13427 codes, 583 comments, 857 blanks, all 14867 lines
+
+Languages
++--------------+------------+------------+------------+------------+------------+
+| language     | files      | code       | comment    | blank      | total      |
++--------------+------------+------------+------------+------------+------------+
+| JavaScript   |         48 |      6,873 |        569 |        724 |      8,166 |
+| JSON         |          3 |      6,284 |          0 |          3 |      6,287 |
+| Markdown     |          2 |        211 |          0 |         98 |        309 |
+| Shell Script |          4 |         59 |         14 |         32 |        105 |
++--------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                               | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                  |         57 |     13,427 |        583 |        857 |     14,867 |
+| . (Files)                                                                                          |          6 |      6,361 |          9 |         27 |      6,397 |
+| distribution                                                                                       |         31 |      3,860 |        354 |        262 |      4,476 |
+| distribution/all                                                                                   |         12 |      1,675 |        199 |        147 |      2,021 |
+| distribution/config                                                                                |          3 |         90 |         14 |         15 |        119 |
+| distribution/local                                                                                 |         10 |      1,198 |        118 |         88 |      1,404 |
+| distribution/util                                                                                  |          6 |        897 |         23 |         12 |        932 |
+| docs                                                                                               |          1 |        185 |          0 |         85 |        270 |
+| engine                                                                                             |          7 |        198 |         29 |         41 |        268 |
+| scripts                                                                                            |          3 |         58 |         14 |         32 |        104 |
+| test                                                                                               |          9 |      2,765 |        177 |        410 |      3,352 |
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------+--------------+------------+------------+------------+------------+
+| filename                                                                                           | language     | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------+--------------+------------+------------+------------+------------+
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/.prettierrc                        | JSON         |          9 |          0 |          1 |         10 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/README.md                          | Markdown     |         26 |          0 |         13 |         39 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution.js                    | JavaScript   |         50 |          9 |         11 |         70 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/all.js            | JavaScript   |         20 |         20 |         11 |         51 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/comm.js           | JavaScript   |         40 |          0 |          2 |         42 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/crawler.js        | JavaScript   |        150 |          8 |         11 |        169 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/gossip.js         | JavaScript   |        171 |          7 |          2 |        180 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/groups.js         | JavaScript   |        128 |          7 |          2 |        137 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/mem.js            | JavaScript   |        308 |         42 |         45 |        395 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/mr.js             | JavaScript   |        224 |         16 |         14 |        254 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/query.js          | JavaScript   |         24 |          6 |          3 |         33 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/routes.js         | JavaScript   |         72 |          7 |          2 |         81 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/status.js         | JavaScript   |        169 |          7 |          2 |        178 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/store.js          | JavaScript   |        315 |         56 |         48 |        419 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/all/toy_crawler.js    | JavaScript   |         54 |         23 |          5 |         82 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/config/config.js      | JavaScript   |         10 |          4 |          3 |         17 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/config/mapper.js      | JavaScript   |         61 |         10 |          8 |         79 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/config/reducer.js     | JavaScript   |         19 |          0 |          4 |         23 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/comm.js         | JavaScript   |        119 |          7 |          2 |        128 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/gossip.js       | JavaScript   |         98 |          7 |          2 |        107 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/groups.js       | JavaScript   |        222 |          7 |          2 |        231 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/local.js        | JavaScript   |         71 |          7 |          2 |         80 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/mem.js          | JavaScript   |        119 |          0 |          8 |        127 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/node.js         | JavaScript   |         98 |         59 |         30 |        187 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/query.js        | JavaScript   |         45 |          5 |          8 |         58 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/routes.js       | JavaScript   |        109 |          7 |          2 |        118 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/status.js       | JavaScript   |        154 |          7 |          2 |        163 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/local/store.js        | JavaScript   |        163 |         12 |         30 |        205 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/util/id.js            | JavaScript   |        149 |          7 |          2 |        158 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/util/log.js           | JavaScript   |         21 |          0 |          3 |         24 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/util/promisify.js     | JavaScript   |         17 |          2 |          1 |         20 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/util/serialization.js | JavaScript   |        617 |          7 |          2 |        626 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/util/util.js          | JavaScript   |         13 |          0 |          2 |         15 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/distribution/util/wire.js          | JavaScript   |         80 |          7 |          2 |         89 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/docs/README.md                     | Markdown     |        185 |          0 |         85 |        270 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/engine/App.js                      | JavaScript   |         33 |          0 |          4 |         37 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/engine/cleanup.js                  | JavaScript   |         14 |          0 |          3 |         17 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/engine/config.js                   | JavaScript   |         31 |         24 |         10 |         65 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/engine/crawler.js                  | JavaScript   |         47 |          0 |          8 |         55 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/engine/init.js                     | JavaScript   |         24 |          3 |          5 |         32 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/engine/mapreduce.js                | JavaScript   |         15 |          1 |          4 |         20 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/engine/query.js                    | JavaScript   |         34 |          1 |          7 |         42 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/package-lock.json                  | JSON         |      6,250 |          0 |          1 |      6,251 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/package.json                       | JSON         |         25 |          0 |          1 |         26 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/scripts/delete.sh                  | Shell Script |         13 |          8 |          6 |         27 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/scripts/deleteForMac.sh            | Shell Script |         11 |          5 |          5 |         21 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/scripts/submit.sh                  | Shell Script |         34 |          1 |         21 |         56 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/start.sh                           | Shell Script |          1 |          0 |          0 |          1 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/test/all.student.test.js           | JavaScript   |        419 |         44 |         79 |        542 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/test/all.test.js                   | JavaScript   |        859 |         56 |        112 |      1,027 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/test/crawl.test.js                 | JavaScript   |        253 |         15 |         28 |        296 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/test/lint.test.js                  | JavaScript   |         12 |          1 |          5 |         18 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/test/local.test.js                 | JavaScript   |        667 |         13 |        107 |        787 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/test/mapReduce.test.js             | JavaScript   |         87 |         18 |         17 |        122 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/test/mr.test.js                    | JavaScript   |        187 |         21 |         35 |        243 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/test/oracle.js                     | JavaScript   |        151 |          7 |          2 |        160 |
+| /Users/liyuanfeng/Desktop/研究生学习/CSCI 1380 Distributed System/m6/test/serialization.test.js         | JavaScript   |        130 |          2 |         25 |        157 |
+| Total                                                                                              |              |     13,427 |        583 |        857 |     14,867 |
++----------------------------------------------------------------------------------------------------+--------------+------------+------------+------------+------------+

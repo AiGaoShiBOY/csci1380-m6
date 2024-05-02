@@ -1,0 +1,17 @@
+.navbar-custom {
+  background-color: black;
+  height: 6vh;
+  color: white;
+  .brand-container {
+    --bs-gutter-x: 5rem;
+    .brand {
+      color: white;
+      font-weight: bold;
+      font-style: italic;
+    }
+    .icon {
+      font-size: 3vh;
+      cursor: pointer;
+    }
+  }
+}
