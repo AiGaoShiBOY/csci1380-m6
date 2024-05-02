@@ -5,7 +5,7 @@ const args = require('yargs').argv;
 
 // Default configuration
 global.nodeConfig = global.nodeConfig || {
-  ip: '127.0.0.1',
+  ip: '0.0.0.0',
   port: 8080,
   onStart: () => {
     console.log('Node started!');
