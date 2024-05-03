@@ -1,11 +1,10 @@
-import logo from './logo.svg';
 import './App.scss';
 import {TopBar} from './components/TopBar';
 import {Container} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import {FaSearch} from 'react-icons/fa';
-import {Checkbox, CheckboxGroup} from '@chakra-ui/react';
+import {Checkbox} from '@chakra-ui/react';
 import {put} from './httpUtils/requestUtils';
 
 function App() {
